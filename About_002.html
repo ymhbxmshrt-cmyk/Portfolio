@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Endlos-Scroll</title>
+    <style>
+        /* -------------------------------------- */
+        /* CUSTOM FONTS & CURSOR */
+        /* -------------------------------------- */
+        @font-face {
+            font-family: 'AkzidenzGrotesk-Regular';
+            /* Hinweis: Externe Assets sind in dieser Umgebung nicht verfügbar. Dies bleibt als Referenz. */
+            src: url('Assets/AkzidenzGrotesk-Regular.otf') format('opentype'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html, body {
+            /* Fallback für AkzidenzGrotesk-Regular */
+            font-family: 'AkzidenzGrotesk-Regular', sans-serif; 
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            background-color: white;
+            color: black;
+            /* Fallback für Custom Cursor */
+            cursor: url('assets/Mouse/cursor_default.png') 16 16, auto;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+        
+        /* FIX: ZWINGT INTERAKTIVE ELEMENTE, DEN BENUTZERDEFINIERTEN CURSOR ZU VERWENDEN */
+        #backButton,
+        a,
+        button {
+            /* Fallback für Custom Cursor */
+            cursor: url('assets/Mouse/cursor_default.png') 16 16, pointer !important;
+        }
+
+        /* -------------------------------------- */
+        /* LAYOUT & STRUCTURE */
+        /* -------------------------------------- */
+        
+        #scrollContainer {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        
+        #scrollContainer::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
+        }
+
+        .project-page {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 90vh;
+            padding: 4rem 2rem; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            background-color: white;
+            color: black;
+        }
+        
+        /* -------------------------------------- */
+        /* SEITE 1: ZENTRIERTER PLATZHALTER */
+        /* -------------------------------------- */
+     
+        #image-placeholder-1 {
+            position: absolute;
+            /* Zentriert das Element horizontal und vertikal */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Größe für den Rahmen/Platzhalter */
+            width: 80%;
+            height: 80%;
+            
+            /* Platzhalter Farbe: Hellgrün */
+            background-color: #6ee7b7; 
+            z-index: 5; /* Unter dem Hauptinhalt */
+        }
+        
+        /* -------------------------------------- */
+        /* SEITE 2: POLAROID GALERIE STYLING */
+        /* -------------------------------------- */
+
+        .polaroid-gallery {
+            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
+            position: absolute;
+            top: 40%;
+            left: 55%; 
+            transform: translate(-50%, -50%);
+            width: 80vw; /* Containerbreite */
+            height: 70vh; /* Containerhöhe */
+            max-width: 900px;
+            max-height: 600px;
+            
+            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible; 
+        }
+
+        .polaroid-item {
+            position: absolute;
+            /* Standardgröße für ein Polaroid (passt sich dem Container an) */
+            width: 40%; 
+            max-width: 250px; 
+            z-index: 10;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s;
+        }
+        
+        .polaroid-item:hover {
+            transform: scale(1.1) !important;
+            z-index: 100 !important; /* Bringt das Bild beim Hover nach vorne */
+            cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer !important;
+        }
+
+        .polaroid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .sticker1 {
+            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
+            position: absolute;
+            top: 25%;
+            left: 20%; 
+            transform: translate(-50%, -50%);
+            width: 30vw; /* Containerbreite */
+            height: 20vh; /* Containerhöhe */
+            max-width: 200px;
+            max-height: 100px;
+            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible; 
+        }
+        
+        .sticker1 img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            
+        }
+        .hellosticker {
+            position: absolute;
+            /* Standardgröße für ein Polaroid (passt sich dem Container an) */
+            width: 100%; 
+            max-width: 200px; 
+            
+            
+            z-index: 20;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s;
+        }
+        .hellosticker:hover {
+            transform: scale(1.5) !important;
+            z-index: 100 !important; /* Bringt das Bild beim Hover nach vorne */
+            cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer !important;
+        }
+        .sticker2 {
+            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
+            position: absolute;
+            top: 65%;
+            left: 3vw; 
+            transform: translate(-50%, -50%);
+            width: 30vw; /* Containerbreite */
+            height: 20vh; /* Containerhöhe */
+            max-width: 200px;
+            max-height: 100px;
+            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible; 
+        }
+        
+        .sticker2 img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            
+        }
+        .massagesticker {
+            position: absolute;
+            /* Standardgröße für ein Polaroid (passt sich dem Container an) */
+            width: 100%; 
+            max-width: 200px; 
+            
+            
+            z-index: 20;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s;
+        }
+        .massagesticker:hover {
+            transform: scale(1.5) !important;
+            z-index: 100 !important; /* Bringt das Bild beim Hover nach vorne */
+            cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer !important;
+        }
+        .pissergif {
+            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
+            position: absolute;
+            top: 40%;
+            left: 12vw; 
+            transform: translate(-50%, -50%);
+            width: 25vw; /* Containerbreite */
+            height: 50vh; /* Containerhöhe */
+            max-width: 500px;
+            max-height: 500px;
+            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible; 
+        }
+        
+        .pissergif img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            
+        }
+        .pisser {
+            position: absolute;
+            /* Standardgröße für ein Polaroid (passt sich dem Container an) */
+            width: 100%;  
+            
+            
+            z-index: 20;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s;
+        }
+        @keyframes schuetteln {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-3px, 1px) rotate(-2deg); }
+  40% { transform: translate(-3px, -1px) rotate(2deg); }
+  60% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(3px, -1px) rotate(1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+        .pisser:hover {
+            animation: schuetteln 0.15s infinite;
+            z-index: 100 !important; /* Bringt das Bild beim Hover nach vorne */
+            cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer !important;
+        }
+        
+        .auffoderunggif {
+            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
+            position: absolute;
+            top: 60%;
+            left: 50vw; 
+            transform: translate(-50%, -50%);
+            width: 50vw; /* Containerbreite */
+            height: 50vh; /* Containerhöhe */
+            max-width: 700px;
+            max-height: 500px;
+            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible; 
+        }
+        
+        .auffoderunggif img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            
+        }
+        .auffoderung {
+            position: absolute;
+            /* Standardgröße für ein Polaroid (passt sich dem Container an) */
+            width: 100%;  
+            z-index: 20;
+        }
+        /* -------------------------------------- */
+        /* INHALTSPOSITIONIERUNG (Main Content) */
+        /* -------------------------------------- */
+
+        .main-content{
+            position: absolute;
+            z-index: 20; /* Über der Galerie */
+            width: 60%;
+            max-width: 500px;
+            top: 40%; 
+            left: 80%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .project-title {
+            font-size: 2.25rem; 
+            line-height: 2.5rem;
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: -0.025em; 
+            margin-bottom: 1.5rem; 
+            margin-top: 0;
+            width: 100%; 
+        }
+
+        .project-page h2 {
+            font-size: 1.5rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+            margin-top: -1rem;
+        }
+
+        .description {
+            width: 100%;
+            font-size: 1rem; 
+            line-height: 1.5; 
+            color: #1f2937; 
+        }
+
+        
+        /* -------------------------------------- */
+        /* PROGRESS BAR (SCROLLBAR) */
+        /* -------------------------------------- */
+        #progressBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 6px; /* Dünne Linie */
+            background-color: black;
+            width: 0%; /* Startet bei 0 */
+            z-index: 100;
+            transition: width 0.1s linear; /* Weicher Übergang beim Scrollen */
+        }
+        
+        /* Cursor inputs */
+        input[type="text"], textarea {
+            /* Fallback für Custom Cursor */
+            cursor: url('assets/Mouse/cursor_text.png') 16 16, text;
+        }
+        
+        /* -------------------------------------- */
+        /* BACK BUTTON (ANGEPASST) */
+        /* -------------------------------------- */
+        #backButton {
+            position: fixed; 
+            top: 1vh;
+            left: 50%; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            
+            /* NEUE ANPASSUNGEN FÜR KLEINERE GRÖSSE */
+            height: auto; /* Höhe flexibel halten */
+            padding: 10px 20px; /* Kleinerer Klickbereich/Padding */
+            min-width: 0; /* Min-Breite entfernen */
+            max-width: 300px; /* Maximale Breite begrenzen */
+            
+            border: none;
+            background: rgba(255, 255, 255, 0); 
+            color: black; 
+            font-size: 1rem;
+            font-weight: bold;
+            line-height: normal; 
+            text-align: center;
+            z-index: 50; 
+            transition: transform 0.4s ease-out, opacity 0.4s ease;
+            
+            /* Unsichtbar und außerhalb des Bildschirms, Klicks deaktivieren, wenn versteckt */
+            transform: translate(-50%, -100%);
+            opacity: 0;
+            pointer-events: none; /* WICHTIG: Verhindert, dass der unsichtbare Button Klicks abfängt */
+        }
+        
+        #backButton .header-image {
+            /* Das Bild im Button kleiner machen, falls es das Problem ist */
+            max-height: 60px; 
+            width: auto;
+        }
+
+        #backButton.visible {
+            /* Sichtbar machen */
+            transform: translate(-50%, 0); /* Bewegt den Button an seine Position */
+            opacity: 1;
+            pointer-events: auto; /* Klicks aktivieren, wenn sichtbar */
+        }
+
+@media screen and (max-width: 768px) {
+    html, body {
+        cursor: auto !important; /* Normaler Cursor auf Handy */
+    }
+    .sticker1{
+            top: 60%;
+            left: -2vw; 
+            transform: translate(-50%, -50%);
+            width: 30vw; /* Containerbreite */
+            height: 20vh; /* Containerhöhe */
+            max-width: 200px;
+            max-height: 100px;
+        } 
+    .polaroid-gallery {
+            
+            top: 40%;
+            left: 55%; 
+            transform: translate(-50%, -50%);
+            width: 90vw; /* Containerbreite */
+            height: 70vh; /* Containerhöhe */
+            max-width: 900px;
+            max-height: 600px;
+        z-index: 100;
+             
+        }
+      .pissergif {
+            top: 55%;
+            left: 35vw; 
+            transform: translate(-50%, -50%);
+            width: 80vw; 
+            height: 90vh; 
+          max-width: 900px;
+            max-height: 500px;
+        }  
+        .massagesticker {
+            top: 95%;
+            left: 5vw; 
+            transform: translate(-50%, -50%);
+            width: 35vw; 
+            height: 20vh; 
+          max-width: 900px;
+            max-height: 500px;
+        }  
+    .auffoderunggif {
+            top: 20%;
+            left:35vw; 
+            transform: translate(-50%, -50%);
+            width: 70vw; /* Containerbreite */
+            height: 50vh; /* Containerhöhe */
+            max-width: 700px;
+            max-height: 500px;
+    }
+    .main-content{
+            z-index: 20; /* Über der Galerie */
+            width: 120%;
+            max-width: 700px;
+            top: 75%; 
+            left: 70%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div id="progressBar"></div>
+
+    <div id="scrollContainer">
+        <!-- Der Back Button wurde korrigiert, um Klicks nur bei Sichtbarkeit zu registrieren -->
+        <button id="backButton" onclick="backToPage1()"><img class="header-image" src="Assets/title_shrift.gif" onerror="this.src='https://placehold.co/200x50/cccccc/333333?text=Zurück+zur+Seite+1'" alt="Zurück zur Seite 1"></button>
+
+        <!-- PROJEKT 1 (Startseite) -->
+        <div id="project1" class="project-page">
+            <!-- GRÜNES PLATZHALTERBILD, das zentriert ist (80% Breite/Höhe) -->
+            <div class="pissergif">
+                <div class="pisser" style=" transform: z-index: 50;">
+                    <img src="Bilder/About/pisser.gif"  alt="Tobi">
+                </div>
+                 </div>
+            <div class="auffoderunggif">
+                <div class="aufforderung" style=" transform: z-index: 50;">
+                    <img src="Assets/Beschriftung/Aufforderung.gif"  alt="scroll on">
+                </div>
+                 </div>
+            <a href="mailto:tobile3107@gmail.com?">
+                 <div class="sticker2">
+                <div class="massagesticker" style="transform: rotate(-15deg); z-index: 20;">
+                    <img src="Assets/Massage.png"  alt="Mail">
+                </div>
+                 </div>
+                 </a>
+             <main class="main-content">
+                <h1 class="project-title">Tobias Lechner</h1>
+                <div class="description">Hey, I'm Tobi and I try to make my surroundings more colorful and cheerful. Sometimes through humor but mostly through my passion for visual design, 2D animation and creative storytelling. I love having ideas, working them out and finally presenting them. You can also often see me walking around with a camera, either you've caught me in private as a hobby photographer or I'm trying to tell a story through moving image. </div>
+            </main>
+            
+        </div>
+        
+        
+        <!-- PROJEKT 2 (About Me) -->
+        <div id="project2" class="project-page">
+             <a href="mailto:tobile3107@gmail.com?">
+                 <div class="sticker1">
+                <div class="hellosticker" style=" transform: rotate(15deg); z-index: 20;">
+                    <img src="Assets/HelloSticker.png"  alt="Mail">
+                </div>
+                 </div>
+                 </a>
+            <!-- POLAROID BILDERGALERIE (ersetzt Placeholder 2) -->
+            <div class="polaroid-gallery">
+                <!-- Bild 1: Linke Seite, Mitte vertikal, scharf links gedreht -->
+                <div class="polaroid-item" style="left: 20%; top: 40%; transform: rotate(-18deg); z-index: 15;">
+                    <!-- Angepasst auf den gewünschten Pfad -->
+                    <img src="Bilder/About/Poleroid Compressed/business.png"  alt="[Polaroid-Bild 1]">
+                </div>
+                
+                <!-- Bild 2: Oben Mitte links, leicht links gedreht -->
+                <div class="polaroid-item" style="left: 35%; top: 15%; transform: rotate(-5deg); z-index: 12;">
+                    <!-- Angepasst auf den gewünschten Pfad -->
+                    <img src="Bilder/About/Poleroid%20Compressed/donut.png" alt="[Polaroid-Bild 2]">
+                </div>
+                
+                <!-- Bild 3: Rechts Mitte, leicht rechts gedreht -->
+                <div class="polaroid-item" style="left: 50%; top: 45%; transform: rotate(10deg); z-index: 13;">
+                    <!-- Angepasst auf den gewünschten Pfad -->
+                    <img src="Bilder/About/Poleroid%20Compressed/cityboy.png" alt="[Polaroid-Bild 3]">
+                </div>
+                
+                <!-- Bild 4: Oben rechts, scharf rechts gedreht -->
+                <div class="polaroid-item" style="left: 70%; top: 25%; transform: rotate(23deg); z-index: 14;">
+                    <!-- Angepasst auf den gewünschten Pfad -->
+                    <img src="Bilder/About/Poleroid%20Compressed/waiting.png"  alt="[Polaroid-Bild 4]">
+                </div>
+                
+                <!-- Bild 5: Unten Mitte rechts, stark links gedreht -->
+                <div class="polaroid-item" style="left: 65%; top: 60%; transform: rotate(-25deg); z-index: 11;">
+                    <!-- Angepasst auf den gewünschten Pfad -->
+                    <img src="Bilder/About/Poleroid%20Compressed/studio.png" alt="[Polaroid-Bild 5]">
+                </div>
+                
+                <!-- Bild 6: Unten links, fast gerade -->
+                <div class="polaroid-item" style="left: 30%; top: 65%; transform: rotate(2deg); z-index: 16;">
+                    <!-- Angepasst auf den gewünschten Pfad -->
+                    <img src="Bilder/About/Poleroid%20Compressed/metro.png"  alt="[Polaroid-Bild 6]">
+                </div>
+            </div>
+            
+        </div>
+   
+
+        <!-- PROJEKT 1 (Loop Copy) -->
+        <div id="project1-copy" class="project-page">
+           
+            <div class="pissergif">
+                <div class="pisser" style=" transform: z-index: 50;">
+                    <img src="Bilder/About/pisser.gif"  alt="Tobi">
+                </div>
+                 </div>
+            <div class="auffoderunggif">
+                <div class="aufforderung" style=" transform: z-index: 50;">
+                    <img src="Assets/Beschriftung/Aufforderung.gif"  alt="scroll on">
+                </div>
+                 </div>
+            <a href="mailto:tobile3107@gmail.com?">
+                 <div class="sticker2">
+                <div class="massagesticker" style="transform: rotate(-15deg); z-index: 20;">
+                    <img src="Assets/Massage.png"  alt="Mail">
+                </div>
+                 </div>
+                 </a>
+            <main class="main-content">
+                <h1 class="project-title">Tobias Lechner</h1>
+                <div class="description">Hey, I'm Tobi and I try to make my surroundings more colorful and cheerful. Sometimes through humor but mostly through my passion for visual design, 2D animation and creative storytelling. I love having ideas, working them out and finally presenting them. You can also often see me walking around with a camera, either you've caught me in private as a hobby photographer or I'm trying to tell a story through moving image. </div>
+            </main>
+            
+        </div>
+        
+ </div>
+    <script>
+        function backToPage1() {
+            window.location.href = 'website_v014.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('scrollContainer');
+            const progressBar = document.getElementById('progressBar');
+            const backButton = document.getElementById('backButton');
+            
+            const totalUniquePages = 2;
+            const projectIds = ['project1', 'project2', 'project1-copy'];
+
+            let pressTimer;
+            let startX, startY;
+            const LONG_PRESS_DURATION = 350; 
+            const MOVE_TOLERANCE = 10; 
+            const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
+
+            // NEUE LOGIK: Button sofort beim Laden sichtbar machen, um die CSS-Animation auszulösen
+            backButton.classList.add('visible'); 
+            
+            function jumpToProject(id) {
+                if (id === 'project1' && container.scrollLeft > container.offsetWidth) {
+                    container.style.scrollBehavior = 'auto'; 
+                    container.scrollLeft = 0;
+                    requestAnimationFrame(() => {
+                        container.style.scrollBehavior = 'smooth';
+                    });
+                    return true;
+                }
+                const index = projectIds.indexOf(id);
+                if (index !== -1) {
+                    const pageWidth = container.offsetWidth;
+                    container.style.scrollBehavior = 'smooth'; 
+                    container.scrollLeft = pageWidth * index;
+                    return true;
+                }
+                return false;
+            }
+
+            if (window.location.hash) {
+                const targetId = window.location.hash.substring(1);
+                if (!jumpToProject(targetId)) {
+                    container.scrollLeft = 0;
+                }
+            } else {
+                container.scrollLeft = 0;
+            }
+
+            window.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    container.scrollBy({
+                        left: e.deltaY,
+                        behavior: 'auto'
+                    });
+                }
+            }, { passive: true });
+
+            container.addEventListener('scroll', () => {
+                const pageWidth = container.offsetWidth;
+                const scrollPos = container.scrollLeft;
+                const loopTriggerPos = pageWidth * totalUniquePages; 
+                
+                // --- PROGRESS BAR LOGIC ---
+                let progress = scrollPos / loopTriggerPos;
+                
+                if (progress > 1) progress = 1;
+                
+                progressBar.style.width = (progress * 100) + '%';
+
+                if (scrollPos >= loopTriggerPos) {
+                    const offset = scrollPos - loopTriggerPos;
+                    container.style.scrollBehavior = 'auto';
+                    container.scrollLeft = 0 + offset;
+                    
+                    // Reset Progress Bar sofort auf 0% (optional mit kurzer Verzögerung für Effekt)
+                    progressBar.style.transition = 'none'; // Verhindert Animation beim Sprung
+                    progressBar.style.width = '0%';
+                    
+                    requestAnimationFrame(() => {
+                        container.style.scrollBehavior = 'smooth';
+                        // Reaktiviere Transition im nächsten Frame
+                        setTimeout(() => {
+                            progressBar.style.transition = 'width 0.1s linear';
+                        }, 50);
+                    });
+                }
+            });
+            
+            
+            document.addEventListener('keydown', (e) => {
+                // Hinzugefügt: Überprüfen, ob 'globalImageOverlay' existiert, bevor darauf zugegriffen wird
+                const globalImageOverlay = document.getElementById('globalImageOverlay');
+                if (e.key === 'Escape' && globalImageOverlay && globalImageOverlay.classList.contains('visible')) {
+                    // Wenn hideGlobalOverlay() existiert, rufen Sie es auf. Ansonsten ignorieren.
+                    if (typeof hideGlobalOverlay === 'function') {
+                        hideGlobalOverlay();
+                    }
+                }
+            });
+
+            window.addEventListener('hashchange', () => {
+                const targetId = window.location.hash.substring(1);
+                jumpToProject(targetId);
+            });
+            
+            container.style.scrollBehavior = 'smooth';
+        });
+    </script>
+</body>
+</html>

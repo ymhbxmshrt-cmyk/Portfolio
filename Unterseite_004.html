@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Endlos-Scroll</title>
+    <style>
+        /* -------------------------------------- */
+        /* CUSTOM FONTS & CURSOR */
+        /* -------------------------------------- */
+        @font-face {
+            font-family: 'AkzidenzGrotesk-Regular';
+            src: url('Assets/AkzidenzGrotesk-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html, body {
+            font-family: 'AkzidenzGrotesk-Regular', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            background-color: white;
+            color: black;
+            cursor: url('assets/Mouse/cursor_default.png') 16 16, auto;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+        
+        /* FIX: ZWINGT INTERAKTIVE ELEMENTE, DEN BENUTZERDEFINIERTEN CURSOR ZU VERWENDEN */
+        .image-thumbnail, 
+        .arrow-icon-container, 
+        #backButton,
+        a,
+        button {
+            cursor: url('assets/Mouse/cursor_default.png') 16 16, pointer !important;
+        }
+
+        /* -------------------------------------- */
+        /* LAYOUT & STRUCTURE */
+        /* -------------------------------------- */
+        
+        #scrollContainer {
+            scroll-snap-type: x mandatory;
+            overflow-x: scroll;
+            overflow-y: hidden; 
+            width: 100%;
+            height: 100%;
+            display: flex;
+            -webkit-overflow-scrolling: touch;
+            /* Verstecke Standard-Scrollbars */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE 10+ */
+        }
+        
+        #scrollContainer::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
+        }
+
+        .project-page {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 4rem 2rem; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            background-color: white;
+            color: black;
+        }
+
+        .main-content {
+            top: 15%;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: none;
+        }
+
+        .project-title {
+            font-size: 2.25rem; 
+            line-height: 2.5rem;
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: -0.025em; 
+            margin-bottom: 1.5rem; 
+            margin-top: 0;
+            width: 100%; 
+        }
+
+        .project-page h2 {
+            font-size: 1.5rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+            margin-top: -1rem;
+        }
+
+        .description {
+            width: 100%; 
+            font-size: 1rem; 
+            line-height: 1.5; 
+            color: #1f2937; 
+        }
+        
+        /* -------------------------------------- */
+        /* STICKER FIX: POSITIONIERUNG AUF DEN LINK VERSCHOBEN */
+        /* -------------------------------------- */
+
+        /* 1. Basis-Styling für alle Sticker-Links (<a>) */
+        /* :has() Selector wählt den Link aus, der ein div mit einer Klasse enthält, die mit "sticker" beginnt */
+        .project-page a:has(div[class^="sticker"]) {
+            position: absolute; /* Der A-Tag ist nun das absolut positionierte Element */
+            display: block; /* Wichtig, damit es width/height annimmt */
+            width: 30vw; 
+            max-width: 200px;
+            z-index: 200; /* Standard Z-Index */
+            height: auto; 
+            /* Übergang für Skalierung und Z-Index. Z-Index wird verzögert, um einen visuellen Sprung zu vermeiden. */
+            transition: transform 0.3s ease;
+        }
+        
+        /* 2. Spezifische Positionierung für jeden Link */
+        .project-page a:has(> .sticker1) {
+            top: 60%;
+            left: 70vw; 
+            transform: translate(-50%, -50%);
+        }
+        
+        .project-page a:has(> .sticker2) {
+            top: 60%;
+            left: 20vw; 
+            transform: translate(-50%, -50%);
+        }
+        
+        .project-page a:has(> .sticker3) {
+            top: 60%;
+            left: 45vw; 
+            transform: translate(-50%, -50%);
+        }
+        
+        /* 3. Hover: Skalierung und Z-Index (kommt nach vorne und bleibt dort, bis Maus weg ist) */
+        .project-page a:has(div[class^="sticker"]):hover {
+            /* Transformations-Korrektur für die Skalierung, um den Mittelpunkt zu halten. 
+               !important wurde entfernt, um Browser-Berechnungen zu vereinfachen. */
+            transform: scale(1.5) translate(-33.33%, -33.33%); 
+            z-index: 100 !important; /* Wichtig: Sorgt dafür, dass es in der Stapelreihenfolge ganz nach oben kommt. */
+            cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer !important;
+        }
+
+        /* 4. Die inneren stickerX divs werden zu einfachen Wrapper-Containern */
+        .sticker1, .sticker2, .sticker3 {
+            position: static; 
+            width: 100%;
+            height: auto;
+            display: block; 
+            overflow: visible; 
+        }
+        
+        /* 5. hellosticker wird ein normaler Block und erhält die Rotation (per Inline-Style) */
+        .hellosticker {
+            width: 100%;
+            max-width: none; 
+            /* Übergang ist nicht mehr nötig, da die Skalierung auf dem A-Tag passiert */
+            display: block;
+        }
+        
+        .sticker1 img, .sticker2 img, .sticker3 img{
+            width: 100%;
+            height: auto; 
+            object-fit: cover;
+            display: block;
+            
+        }
+
+        /* NAVIGATION ARROW */
+        .arrow-icon-container {
+            position: absolute;
+            right: 1.5rem; 
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 30; 
+            transition: opacity 0.3s ease;
+            display: block; 
+            color: black;
+            pointer-events: auto !important; 
+        }
+
+        .arrow-icon-container:hover {
+            opacity: 0.5;
+        }
+
+        .arrow-svg {
+            width: 1.5rem; 
+            height: 1.5rem; 
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.3s ease;
+        }
+
+        .arrow-icon-container:hover .arrow-svg {
+            transform: translateX(0.1rem);
+        }
+
+        /* -------------------------------------- */
+        /* IMAGE GRID & THUMBNAILS */
+        /* -------------------------------------- */
+
+        .image-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px;
+            height: 20%; 
+            margin-top: 2rem; 
+        }
+
+        .image-thumbnail {
+            width: 100%;
+            height: 100%;
+            min-height: 100px; 
+            background-color: #d1d5db; 
+            border-radius: 0.5rem; 
+            transition: background-color 0.15s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative; 
+            z-index: 10;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: pan-x; 
+        }
+        
+        .image-thumbnail.has-image {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 1px solid #e0e0e0;
+        }
+
+        .image-thumbnail:hover {
+            background-color: #9ca3af; 
+        }
+
+        .image-thumbnail.has-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* -------------------------------------- */
+        /* GLOBAL OVERLAY (Used for Desktop Hover & Mobile Longpress) */
+        /* -------------------------------------- */
+        #global-image-overlay {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; 
+            opacity: 0; 
+            visibility: hidden; 
+            transition: opacity 0.3s ease; 
+            pointer-events: none;
+        }
+
+        #global-image-overlay.is-mobile-active {
+            pointer-events: auto;
+        }
+
+        #global-image-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #global-overlay-image {
+            max-width: 80vw; 
+            max-height: 80vh; 
+            object-fit: contain; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); 
+            transform: scale(0.8); 
+            transition: transform 0.3s ease; 
+        }
+
+        #global-image-overlay.visible #global-overlay-image {
+            transform: scale(1); 
+        }
+        
+        /* -------------------------------------- */
+        /* PROGRESS BAR (SCROLLBAR) */
+        /* -------------------------------------- */
+        #progressBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 6px; /* Dünne Linie */
+            background-color: black;
+            width: 0%; /* Startet bei 0 */
+            z-index: 100;
+            transition: width 0.1s linear; /* Weicher Übergang beim Scrollen */
+        }
+        
+        /* Cursor inputs */
+        input[type="text"], textarea {
+            cursor: url('assets/Mouse/cursor_text.png') 16 16, text;
+        }
+        
+        /* -------------------------------------- */
+        /* BACK BUTTON (ANGEPASST) */
+        /* -------------------------------------- */
+        #backButton {
+            position: fixed; 
+            top: 1vh;
+            left: 50%; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            
+            /* NEUE ANPASSUNGEN FÜR KLEINERE GRÖSSE */
+            height: auto; /* Höhe flexibel halten */
+            padding: 10px 20px; /* Kleinerer Klickbereich/Padding */
+            min-width: 0; /* Min-Breite entfernen */
+            max-width: 300px; /* Maximale Breite begrenzen */
+            
+            border: none;
+            background: rgba(255, 255, 255, 0); 
+            color: black; 
+            font-size: 1rem;
+            font-weight: bold;
+            line-height: normal; 
+            text-align: center;
+            z-index: 50; 
+            transition: transform 0.4s ease-out, opacity 0.4s ease;
+            
+            /* Unsichtbar und außerhalb des Bildschirms, Klicks deaktivieren, wenn versteckt */
+            transform: translate(-50%, -100%);
+            opacity: 0;
+            pointer-events: none; /* WICHTIG: Verhindert, dass der unsichtbare Button Klicks abfängt */
+        }
+        
+        #backButton .header-image {
+            /* Das Bild im Button kleiner machen, falls es das Problem ist */
+            max-height: 60px; 
+            width: auto;
+        }
+
+        #backButton.visible {
+            /* Sichtbar machen */
+            transform: translate(-50%, 0); /* Bewegt den Button an seine Position */
+            opacity: 1;
+            pointer-events: auto; /* Klicks aktivieren, wenn sichtbar */
+        }
+        
+        /* ************************************** */
+        /* RESPONSIVE / DESKTOP OVERRIDES (>= 768px) */
+        /* ************************************** */
+
+        @media (min-width: 768px) {
+            .project-page { padding: 4rem 4rem; }
+            .project-title { font-size: 3.75rem; line-height: 1; }
+            .description { width: 50%; font-size: 1.2rem; }
+            .arrow-icon-container { right: 4rem; }
+            .arrow-svg { width: 4rem; height: 4rem; }
+            .image-grid { height: 33.33%; margin-top: 0; }
+        }
+
+        @media (min-width: 1024px) {
+            .project-page a:has(> .sticker1) {
+            top: 25%;
+            left: 70vw; 
+            
+        }
+            .project-page a:has(> .sticker2) {
+            top: 25%;
+            left: 80vw; 
+            
+        }
+            .project-page a:has(> .sticker3) {
+            top: 25%;
+            left: 60vw; 
+            
+        }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div id="progressBar"></div>
+
+    <div id="scrollContainer">
+        <!-- Der Back Button wurde korrigiert, um Klicks nur bei Sichtbarkeit zu registrieren -->
+        <button id="backButton" onclick="backToPage1()"><img class="header-image" src="Assets/title_shrift.gif" onerror="this.src='https://placehold.co/200x50/cccccc/333333?text=Zurück+zur+Seite+1'" alt="Zurück zur Seite 1"></button>
+
+        <!-- PROJEKT 1 -->
+        <div id="project1" class="project-page">
+            <main class="main-content">
+                <h1 class="project-title">Dream World Magazine</h1>
+                <div class="description">This magazine was created as part of a course during my studies. The layout of the brochure is based on a clear design concept that is composed of various typographic and design principles.<br>The type area is based on the Fibonacci sequence (..., 8, 13, 21, ...) and is divided into five columns. The height of the layout is structured by the golden ratio (1:1.618) - a principle that is also reflected in the chosen font sizes.<br>I combined two fonts for the typographic design: Cooper Black Regular creates a striking visual effect with its playful yet legible character. Unna was used for continuous text.</div>
+            </main>
+            <a href="#project2" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Dreamworld_02.png" style="background-image: url('Bilder/Kasterl/Dreamworld_02.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Dreamworld_03.png" style="background-image: url('Bilder/Kasterl/Dreamworld_03.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Dreamworld_04.png" style="background-image: url('Bilder/Kasterl/Dreamworld_04.png');"></div>
+            </div>
+        </div>
+        
+        <!-- PROJEKT 2 -->
+        <div id="project2" class="project-page">
+            <main class="main-content">
+                <h1 class="project-title">Grauzone</h1>
+                <h2>zwischen Kunst und Vandalismus</h2>
+                <div class="description">This short documentary deals with the question of how graffiti influences our society - between artistic expression and the legal gray area.<br>The project was created in 2025 as part of my studies in collaboration with Maya Terler. The focus was on combining animated statistics and real film footage.<br>My tasks included storytelling, camera work and the design and implementation of the animations. I was also responsible for the poster design.</div>
+            </main>
+            <!-- STICKER FIX: A-TAG IST NUN POSITIONIERT -->
+            <a href="https://youtu.be/AlvAvNCw4dY">
+                 <div class="sticker1">
+                    <!-- Rotation und Z-Index bleiben hier als Inline-Style, da sie projektspezifisch sind -->
+                    <div class="hellosticker" style=" transform: rotate(15deg); z-index: 20;">
+                        <img src="Assets/videosticker.png"  alt="Full Video">
+                    </div>
+                 </div>
+            </a>
+            <a href="#project3" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Grauzone_02.png" style="background-image: url('Bilder/Kasterl/Grauzone_02.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Grauzone_2.gif" style="background-image: url('Bilder/Kasterl/Grauzone_2.gif');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Grauzone_01.png" style="background-image: url('Bilder/Kasterl/Grauzone_01.png');"></div>
+            </div>
+        </div>
+        
+        <!-- PROJEKT 3 -->
+        <div id="project3" class="project-page">
+            <main class="main-content">
+                <h1 class="project-title">3D-Animations</h1>
+                <div class="description">Dies ist Projekt 3. Erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.</div>
+            </main>
+            <a href="https://youtu.be/mcQQ2K_EPtM">
+                 <div class="sticker3">
+                    <div class="hellosticker" style=" transform: rotate(10deg); z-index: 20;">
+                        <img src="Assets/videosticker.png"  alt="Full Video">
+                    </div>
+                 </div>
+            </a>
+            <a href="https://youtu.be/xmLZmKeCjRk">
+                 <div class="sticker2">
+                    <div class="hellosticker" style=" transform: rotate(15deg); z-index: 20;">
+                        <img src="Assets/videosticker.png"  alt="Full Video">
+                    </div>
+                 </div>
+            </a>
+            <a href="https://youtu.be/xmLZmKeCjRk">
+                 <div class="sticker1">
+                    <div class="hellosticker" style=" transform: rotate(-5deg); z-index: 20;">
+                        <img src="Assets/videosticker.png"  alt="Full Video">
+                    </div>
+                 </div>
+            </a>
+            <a href="#project4" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/3D Modell-mini_02.png" style="background-image: url('Bilder/Kasterl/3D Modell-mini_02.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Mocap_Animation_01-min.png" style="background-image: url('Bilder/Kasterl/Mocap_Animation_01-min.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Orvion Commercial.png" style="background-image: url('Bilder/Kasterl/Orvion Commercial.png');"></div>
+            </div>
+        </div>
+        
+        <!-- PROJEKT 4 -->
+        <div id="project4" class="project-page">
+            <main class="main-content">
+                <h1 class="project-title">BMW Art-Car Magazine #4</h1>
+                <div class="description">This free project was created in the summer of 2024. The impetus came from a friend who asked me to paint his drift car.<br>The magazine takes up this idea in its design: Three continuous stripes run dynamically through all pages. The typography is deliberately kept simple.<br>The visual language is characterized by a halftone effect. This issue is number 4 because it is dedicated exclusively to the fourth BMW Artcar designed by Andy Warhol.</div>
+            </main>
+            <a href="#project5" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/01_BMW AB Closed.png" style="background-image: url('Bilder/Kasterl/01_BMW AB Closed.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/01_BMW AB 4-5.png" style="background-image: url('Bilder/Kasterl/01_BMW AB 4-5.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/01_BMW AB 6-7.png" style="background-image: url('Bilder/Kasterl/01_BMW AB 6-7.png');"></div>
+            </div>
+        </div>
+        
+        <!-- PROJEKT 5 -->
+        <div id="project5" class="project-page">
+            <main class="main-content">
+                <h1 class="project-title">Gemeinsam Selbstständig</h1>
+                <h2>mit Ergotherapie zurück in den Alltag</h2>
+                <div class="description">This five-minute short documentary gives an insight into the world of occupational therapy and shows how it helps people to organize their everyday lives independently.<br>The project was created as part of a media design course. My tasks included camera work, editing, animating the belly bands and organizing the interviews.<br>The aim was to convey as positive and realistic a picture of occupational therapy as possible.</div>
+            </main>
+            <a href="https://youtu.be/mcQQ2K_EPtM">
+                 <div class="sticker1">
+                    <div class="hellosticker" style=" transform: rotate(15deg); z-index: 20;">
+                        <img src="Assets/videosticker.png"  alt="Full Video">
+                    </div>
+                 </div>
+            </a>
+            <a href="#project6" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/GemSel_01.png" style="background-image: url('Bilder/Kasterl/GemSel_01.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/GemSel_04.png" style="background-image: url('Bilder/Kasterl/GemSel_04.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/GemSel_03.png" style="background-image: url('Bilder/Kasterl/GemSel_03.png');"></div>
+            </div>
+        </div>
+
+        <!-- PROJEKT 6 -->
+        <div id="project6" class="project-page">
+            <main class="main-content">
+                <h1 class="project-title">Humppy</h1>
+                <div class="description">The Humppy app is a happiness challenge app that motivates users to complete small social or ecological tasks every day. By completing the tasks, you collect XP and rise in level.<br>As part of the screen design course, I developed and designed the app as a concept - from the idea to the user interface to the first prototypes.</div>
+            </main>
+            <a href="#project1" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Humppy App_001-min.jpg" style="background-image: url('Bilder/Kasterl/Humppy App_001-min.jpg');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Humppy App_002-min.jpg" style="background-image: url('Bilder/Kasterl/Humppy App_002-min.jpg');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Humppy App_003-min.jpg" style="background-image: url('Bilder/Kasterl/Humppy App_003-min.jpg');"></div>
+            </div>
+        </div>
+
+        <!-- PROJEKT 1 (Loop Copy) -->
+        <div id="project1-copy" class="project-page">
+           <main class="main-content">
+                <h1 class="project-title">Dream World Magazine</h1>
+                <div class="description">This magazine was created as part of a course during my studies. The layout of the brochure is based on a clear design concept that is composed of various typographic and design principles.<br>The type area is based on the Fibonacci sequence (..., 8, 13, 21, ...) and is divided into five columns. The height of the layout is structured by the golden ratio (1:1.618) - a principle that is also reflected in the chosen font sizes.<br>I combined two fonts for the typographic design: Cooper Black Regular creates a striking visual effect with its playful yet legible character. Unna was used for continuous text.</div>
+            </main>
+            <a href="#project2" class="arrow-icon-container nav-arrow" aria-label="Nächstes Projekt">
+                <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-svg">
+            </a>
+            <div class="image-grid">
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Dreamworld_02.png" style="background-image: url('Bilder/Kasterl/Dreamworld_02.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Dreamworld_03.png" style="background-image: url('Bilder/Kasterl/Dreamworld_03.png');"></div>
+                <div class="image-thumbnail has-image" data-full-src="Bilder/Kasterl/Dreamworld_04.png" style="background-image: url('Bilder/Kasterl/Dreamworld_04.png');"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Globales Overlay -->
+    <div id="global-image-overlay">
+        <img id="global-overlay-image" src="" alt="Vergrößertes Projektbild">
+    </div>
+
+    <script>
+        function backToPage1() {
+            window.location.href = 'website_v014.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('scrollContainer');
+            const progressBar = document.getElementById('progressBar');
+            const imageThumbnails = document.querySelectorAll('.image-thumbnail');
+            const globalImageOverlay = document.getElementById('global-image-overlay');
+            const globalOverlayImage = document.getElementById('global-overlay-image');
+            const navArrows = document.querySelectorAll('.nav-arrow'); 
+            const backButton = document.getElementById('backButton');
+            
+            const totalUniquePages = 6;
+            const projectIds = ['project1', 'project2', 'project3', 'project4', 'project5', 'project6'];
+
+            let pressTimer;
+            let startX, startY;
+            const LONG_PRESS_DURATION = 350; 
+            const MOVE_TOLERANCE = 10; 
+            const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
+
+            // NEUE LOGIK: Button sofort beim Laden sichtbar machen, um die CSS-Animation auszulösen
+            backButton.classList.add('visible'); 
+            
+            function jumpToProject(id) {
+                if (id === 'project1' && container.scrollLeft > container.offsetWidth) {
+                    container.style.scrollBehavior = 'auto'; 
+                    container.scrollLeft = 0;
+                    requestAnimationFrame(() => {
+                        container.style.scrollBehavior = 'smooth';
+                    });
+                    return true;
+                }
+                const index = projectIds.indexOf(id);
+                if (index !== -1) {
+                    const pageWidth = container.offsetWidth;
+                    container.style.scrollBehavior = 'smooth'; 
+                    container.scrollLeft = pageWidth * index;
+                    return true;
+                }
+                return false;
+            }
+
+            if (window.location.hash) {
+                const targetId = window.location.hash.substring(1);
+                if (!jumpToProject(targetId)) {
+                    container.scrollLeft = 0;
+                }
+            } else {
+                container.scrollLeft = 0;
+            }
+
+            window.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    container.scrollBy({
+                        left: e.deltaY,
+                        behavior: 'auto'
+                    });
+                }
+            }, { passive: true });
+
+            container.addEventListener('scroll', () => {
+                const pageWidth = container.offsetWidth;
+                const scrollPos = container.scrollLeft;
+                const loopTriggerPos = pageWidth * totalUniquePages; 
+                
+                // --- PROGRESS BAR LOGIC ---
+                let progress = scrollPos / loopTriggerPos;
+                
+                if (progress > 1) progress = 1;
+                
+                progressBar.style.width = (progress * 100) + '%';
+                
+                // --- END PROGRESS BAR LOGIC ---
+
+                // BACK BUTTON LOGIC ENTFERNT: Der Button ist nun immer sichtbar
+                /*
+                if (scrollPos > 50) {
+                    backButton.classList.add('visible');
+                } else {
+                    backButton.classList.remove('visible');
+                }
+                */
+
+                if (scrollPos >= loopTriggerPos) {
+                    const offset = scrollPos - loopTriggerPos;
+                    container.style.scrollBehavior = 'auto';
+                    container.scrollLeft = 0 + offset;
+                    
+                    // Reset Progress Bar sofort auf 0% (optional mit kurzer Verzögerung für Effekt)
+                    progressBar.style.transition = 'none'; // Verhindert Animation beim Sprung
+                    progressBar.style.width = '0%';
+                    
+                    requestAnimationFrame(() => {
+                        container.style.scrollBehavior = 'smooth';
+                        // Reaktiviere Transition im nächsten Frame
+                        setTimeout(() => {
+                            progressBar.style.transition = 'width 0.1s linear';
+                        }, 50);
+                    });
+                }
+            });
+            
+            function showGlobalOverlay(imageSrc, isMobileMode) {
+                globalOverlayImage.src = imageSrc;
+                globalImageOverlay.classList.add('visible');
+                if (isMobileMode) {
+                    globalImageOverlay.classList.add('is-mobile-active');
+                } else {
+                    globalImageOverlay.classList.remove('is-mobile-active');
+                }
+            }
+
+            function hideGlobalOverlay() {
+                globalImageOverlay.classList.remove('visible');
+                globalImageOverlay.classList.remove('is-mobile-active');
+            }
+
+            navArrows.forEach(arrow => {
+                arrow.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                    const targetId = e.currentTarget.getAttribute('href').substring(1);
+                    jumpToProject(targetId);
+                });
+            });
+
+            if (isTouchDevice) {
+                imageThumbnails.forEach(thumbnail => {
+                    thumbnail.addEventListener('touchstart', (e) => {
+                        const touch = e.touches[0];
+                        startX = touch.clientX;
+                        startY = touch.clientY;
+                        const fullSrc = thumbnail.getAttribute('data-full-src');
+
+                        pressTimer = setTimeout(() => {
+                            if (fullSrc) {
+                                showGlobalOverlay(fullSrc, true); 
+                            }
+                        }, LONG_PRESS_DURATION); 
+                    }, { passive: true });
+
+                    thumbnail.addEventListener('touchmove', (e) => {
+                        const touch = e.touches[0];
+                        const deltaX = Math.abs(touch.clientX - startX);
+                        const deltaY = Math.abs(touch.clientY - startY);
+                        if (deltaX > MOVE_TOLERANCE || deltaY > MOVE_TOLERANCE) {
+                            clearTimeout(pressTimer);
+                        }
+                    }, { passive: true });
+
+                    thumbnail.addEventListener('touchend', (e) => {
+                        if (pressTimer) {
+                            clearTimeout(pressTimer);
+                        }
+                        if (globalImageOverlay.classList.contains('visible')) {
+                            // Wenn Overlay sichtbar war, warten wir kurz, da touchend das Overlay auslösen kann, 
+                            // und stellen sicher, dass es wieder ausgeblendet wird.
+                            setTimeout(hideGlobalOverlay, 100); 
+                        }
+                    });
+
+                    thumbnail.addEventListener('touchcancel', (e) => {
+                        clearTimeout(pressTimer);
+                        hideGlobalOverlay();
+                    });
+                    
+                    thumbnail.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                    });
+                });
+            } else {
+                 imageThumbnails.forEach(thumbnail => {
+                    thumbnail.addEventListener('touchstart', (e) => e.preventDefault());
+                    thumbnail.addEventListener('mouseenter', () => {
+                        const fullSrc = thumbnail.getAttribute('data-full-src');
+                        if (fullSrc) {
+                            showGlobalOverlay(fullSrc, false); 
+                        }
+                    });
+                    thumbnail.addEventListener('mouseleave', () => {
+                        hideGlobalOverlay();
+                    });
+                 });
+            }
+
+            globalImageOverlay.addEventListener('click', (event) => {
+                if (event.target === globalImageOverlay || event.target === globalOverlayImage) {
+                    hideGlobalOverlay();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && globalImageOverlay.classList.contains('visible')) {
+                    hideGlobalOverlay();
+                }
+            });
+
+            window.addEventListener('hashchange', () => {
+                const targetId = window.location.hash.substring(1);
+                jumpToProject(targetId);
+            });
+            
+            container.style.scrollBehavior = 'smooth';
+        });
+    </script>
+</body>
+</html>
