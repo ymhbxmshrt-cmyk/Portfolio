@@ -74,7 +74,7 @@
         }
 
         .main-content {
-            top: 24%;
+            top: 15%;
             position: relative;
             z-index: 10;
             width: 100%;
@@ -115,6 +115,7 @@
         .project-page a:has(div[class^="sticker"]) {
             position: absolute; /* Der A-Tag ist nun das absolut positionierte Element */
             display: block; /* Wichtig, damit es width/height annimmt */
+            justify-content: center;
             width: 30vw; 
             max-width: 200px;
             z-index: 200; /* Standard Z-Index */
@@ -125,20 +126,20 @@
         
         /* 2. Spezifische Positionierung für jeden Link */
         .project-page a:has(> .sticker1) {
-            top: 17%;
-            left: 70vw; 
+            top: 15%;
+            left: 60vw; 
             transform: translate(-50%, -50%);
         }
         
         .project-page a:has(> .sticker2) {
-            top: 17%;
+            top: 15%;
             left: 20vw; 
             transform: translate(-50%, -50%);
         }
         
         .project-page a:has(> .sticker3) {
-            top: 17%;
-            left: 45vw; 
+            top: 15%;
+            left: 40vw; 
             transform: translate(-50%, -50%);
         }
         
@@ -154,7 +155,7 @@
         /* 4. Die inneren stickerX divs werden zu einfachen Wrapper-Containern */
         .sticker1, .sticker2, .sticker3 {
             position: static; 
-            width: 100%;
+            width: 50%;
             height: auto;
             display: block; 
             overflow: visible; 
@@ -387,6 +388,10 @@
             left: 60vw; 
             
         }
+            .sticker1, .sticker2, .sticker3 {
+            width: 50%;
+        }
+        
         }
 
     </style>
