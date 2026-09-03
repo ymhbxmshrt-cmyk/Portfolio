@@ -364,7 +364,8 @@
 
         @media (max-width: 767px) {
             :root {
-                --font-heading: 2.75rem;
+                --font-heading: 1.75rem;
+                --font-body: 1rem;
                 --mobile-gallery-gap: 100px;
                 --mobile-gallery-height: 42vh;
             }
@@ -748,6 +749,8 @@
             const projectIds = ['project1', 'project2', 'project3', 'project4', 'project5', 'project6', 'project7'];
             let pressTimer;
             let startX, startY;
+            let currentOverlayThumbnails = [];
+            let currentOverlayIndex = -1;
             const LONG_PRESS_DURATION = 350;
             const MOVE_TOLERANCE = 10;
             const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
@@ -822,6 +825,8 @@
             function hideGlobalOverlay() {
                 globalImageOverlay.classList.remove('visible');
                 globalImageOverlay.classList.remove('is-mobile-active');
+                currentOverlayThumbnails = [];
+                currentOverlayIndex = -1;
             }
 
             navArrows.forEach(arrow => {
@@ -848,6 +853,11 @@
                     const fullSrc = thumbnail.getAttribute('data-full-src');
                     pressTimer = setTimeout(() => {
                         if (fullSrc) {
+                            const grid = thumbnail.closest('.image-grid');
+                            currentOverlayThumbnails = grid
+                                ? Array.from(grid.querySelectorAll('.image-thumbnail[data-full-src]'))
+                                : [thumbnail];
+                            currentOverlayIndex = currentOverlayThumbnails.indexOf(thumbnail);
                             showGlobalOverlay(fullSrc, true);
                         }
                     }, LONG_PRESS_DURATION);
@@ -864,9 +874,6 @@
                     if (pressTimer) {
                         clearTimeout(pressTimer);
                     }
-                    if (globalImageOverlay.classList.contains('visible')) {
-                        setTimeout(hideGlobalOverlay, 100);
-                    }
                 });
                 thumbnail.addEventListener('touchcancel', () => {
                     clearTimeout(pressTimer);
@@ -877,7 +884,18 @@
                 });
             });
             globalImageOverlay.addEventListener('click', (event) => {
-                if (event.target === globalImageOverlay || event.target === globalOverlayImage) {
+                if (event.target === globalOverlayImage) {
+                    const isMobilePeek = globalImageOverlay.classList.contains('is-mobile-active');
+                    if (isMobilePeek && currentOverlayThumbnails.length > 1) {
+                        currentOverlayIndex = (currentOverlayIndex + 1) % currentOverlayThumbnails.length;
+                        const nextSrc = currentOverlayThumbnails[currentOverlayIndex].getAttribute('data-full-src');
+                        if (nextSrc) globalOverlayImage.src = nextSrc;
+                    } else {
+                        hideGlobalOverlay();
+                    }
+                    return;
+                }
+                if (event.target === globalImageOverlay) {
                     hideGlobalOverlay();
                 }
             });
