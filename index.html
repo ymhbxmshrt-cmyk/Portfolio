@@ -34,6 +34,7 @@ html, body {
 .scroll-container {
     display: flex;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
@@ -46,6 +47,7 @@ html, body {
     flex: none;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -204,6 +206,7 @@ html, body {
     --pad-bottom: var(--gap);
     --col-unit: calc((100vw - 12 * var(--gap)) / 12);
     --row-unit: calc((100vh - var(--pad-top) - var(--pad-bottom) - 2 * var(--gap)) / 3);
+    --row-unit: calc((100dvh - var(--pad-top) - var(--pad-bottom) - 2 * var(--gap)) / 3);
 }
 
 .seite2, .seite3 {
@@ -653,6 +656,9 @@ input[type="text"], textarea {
   </div>
 
 <script>
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
 (function () {
   const container = document.getElementById('scrollContainer');
   const backButton = document.getElementById('backButton');

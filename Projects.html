@@ -23,6 +23,7 @@
         html, body {
             font-family: 'Satoshi-Variable', sans-serif;
             height: 100vh;
+            height: 100dvh;
             width: 100vw;
             margin: 0;
             padding: 0;
@@ -67,6 +68,7 @@
             flex-shrink: 0;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             padding: 4rem 2rem;
             box-sizing: border-box;
             display: flex;
@@ -277,6 +279,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
@@ -733,6 +736,9 @@
     </div>
 
     <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
         function backToPage1() {
             window.location.href = 'index.html';
         }
@@ -779,6 +785,16 @@
                 if (!jumpToProject(targetId)) {
                     container.scrollLeft = 0;
                 }
+                window.addEventListener('load', () => {
+                    const index = projectIds.indexOf(targetId);
+                    if (index !== -1) {
+                        container.style.scrollBehavior = 'auto';
+                        container.scrollLeft = container.offsetWidth * index;
+                        requestAnimationFrame(() => {
+                            container.style.scrollBehavior = 'smooth';
+                        });
+                    }
+                });
             } else {
                 container.scrollLeft = 0;
             }

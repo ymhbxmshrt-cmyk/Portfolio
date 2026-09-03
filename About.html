@@ -23,6 +23,7 @@
         html, body {
             font-family: 'Satoshi-Variable', sans-serif;
             height: 100vh;
+            height: 100dvh;
             width: 100vw;
             margin: 0;
             padding: 0;
@@ -44,6 +45,7 @@
         #scrollContainer {
             display: flex;
             height: 100vh;
+            height: 100dvh;
             width: 100%;
             overflow-x: auto;
             overflow-y: hidden;
@@ -337,6 +339,7 @@
 
     .project-page {
         height: 100vh;
+        height: 100dvh;
         overflow: visible;
     }
     .sticker1{
@@ -511,6 +514,9 @@
 
  </div>
     <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
         function backToPage1() {
             window.location.href = 'index.html';
         }
@@ -546,6 +552,16 @@
                 if (!jumpToProject(targetId)) {
                     container.scrollLeft = 0;
                 }
+                window.addEventListener('load', () => {
+                    const index = projectIds.indexOf(targetId);
+                    if (index !== -1) {
+                        container.style.scrollBehavior = 'auto';
+                        container.scrollLeft = container.offsetWidth * index;
+                        requestAnimationFrame(() => {
+                            container.style.scrollBehavior = 'smooth';
+                        });
+                    }
+                });
             } else {
                 container.scrollLeft = 0;
             }
