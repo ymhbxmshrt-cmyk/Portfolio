@@ -4,27 +4,31 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Tobis Portfolio</title>
-    
+
 <style>
-/* -------------------------------------- */
-/* GRUNDEINSTELLUNGEN */
-/* -------------------------------------- */
 @font-face {
-    font-family: 'AkzidenzGrotesk-Regular';
-    /* HINWEIS: Stelle sicher, dass der Pfad stimmt */
-    src: url('Assets/AkzidenzGrotesk-Regular.otf') format('opentype');
-    font-weight: normal; 
+    font-family: 'Satoshi-Variable';
+    src: url('Assets/Satoshi-Variable.ttf') format('truetype-variations'),
+         url('Assets/Satoshi-Variable.ttf') format('truetype');
+    font-weight: 300 900;
     font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --font-heading: 4rem;
+    --font-subtitle: calc(var(--font-heading) / 1.618);
+    --font-body: calc(var(--font-subtitle) / 1.618);
 }
 
 html, body {
-    font-family: 'AkzidenzGrotesk-Regular', sans-serif;
+    font-family: 'Satoshi-Variable', sans-serif;
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background: white; 
-    /* Desktop Cursor */
-    cursor: url('assets/Mouse/cursor_default.png') 16 16, auto; 
+    background: white;
+    cursor: url('Assets/Mouse/cursor_default.png') 16 16, auto;
+    overscroll-behavior-x: contain;
 }
 
 .scroll-container {
@@ -33,6 +37,8 @@ html, body {
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
 }
 
 .page {
@@ -41,192 +47,175 @@ html, body {
     width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     font-size: 4rem;
     color: white;
     box-sizing: border-box;
-    background: white; 
+    background: white;
 }
 
-.seite1 { 
+.seite1 {
     background: #ffff;
 }
-        #scrollContainer::-webkit-scrollbar { 
-            display: none;  /* Safari and Chrome */
+        #scrollContainer::-webkit-scrollbar {
+            display: none;
         }
-/* -------------------------------------- */
-/* TEXT & BILDER (DESKTOP DEFAULT) */
-/* -------------------------------------- */
 
 .header-text-container {
-    /* Desktop: Absolut positioniert oben links */
     position: absolute;
-    top: 10vh; 
-    left: 10vh; 
-    max-width: 500px; 
-    z-index: 50; 
-    color: black; 
+    top: 10vh;
+    left: 10vh;
+    max-width: 500px;
+    z-index: 50;
+    color: black;
     text-align: left;
 }
 
 .header-text-container h1 {
-    font-size: 2.9rem; 
+    font-size: var(--font-heading);
+    font-weight: 800;
+    text-transform: uppercase;
     line-height: 0.9;
     margin: 0;
 }
 
 .header-text-container p {
-    font-size: 1.18rem;
+    font-size: var(--font-body);
+    font-weight: 300;
     line-height: 1.3;
     margin-top: 15px;
 }
-    .header-text-link{
-        font-size: 1.5rem;
-    line-height: 1.5;
-    margin-top: 15px;
-    text-decoration: none;
-        color: rgb(255,163,0);
+
+    .nav-menu {
+        position: absolute;
+        top: 10vh;
+        right: 8vh;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
-    .header-text-link:hover{
-        font-size: 1.8rem;
-    text-decoration: none;
+    .nav-menu-link {
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        text-align: right;
+        color: black;
+        transition: color 0.3s ease;
+    }
+    .nav-menu-link:hover {
         color: rgb(255,89,0);
-        cursor: url('assets/Mouse/cursor_hover.png') 16 16, auto;
+        cursor: url('Assets/Mouse/cursor_hover.png') 16 16, pointer;
     }
     .header-image{
         max-height: 60px;
         width: auto;
     }
     .sticker1 {
-            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
             position: absolute;
             top: 75%;
-            left: 20vh; 
+            left: 20vh;
             transform: translate(-50%, -50%);
-            width: 30vw; /* Containerbreite */
-            height: 20vh; /* Containerhöhe */
+            width: 30vw;
+            height: 20vh;
             max-width: 200px;
             max-height: 100px;
-            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: visible; 
+            overflow: visible;
         }
-        
+
         .sticker1 img{
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-            
         }
         .hellosticker {
             position: absolute;
-            /* Standardgröße für ein Polaroid (passt sich dem Container an) */
-            width: 100%; 
-            max-width: 200px; 
-            
-            
+            width: 100%;
+            max-width: 200px;
             z-index: 200;
             transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s;
         }
         .hellosticker:hover {
             transform: scale(1.5) !important;
-            z-index: 100 !important; /* Bringt das Bild beim Hover nach vorne */
-            cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer !important;
+            z-index: 100 !important;
+            cursor: url('Assets/Mouse/cursor_hover.png') 16 16, pointer !important;
         }
 .title-image {
     z-index: 30;
-    /* Desktop: Größe und Zentrierung */
-    max-width: 30vw; 
-    max-height: 80vh; 
+    max-width: 30vw;
+    max-height: 80vh;
     height: auto;
-    display: block; 
-    position: absolute; 
-    
-    top: 50%;
+    display: block;
+    position: absolute;
+    bottom: var(--pad-bottom);
     left: 50%;
-    /* WICHTIG: Zentriert das Bild exakt */
-    transform: translate(-50%, -50%) rotate(5deg);
-      
+    transform: translateX(-50%) rotate(5deg);
     transition: transform 0.5s ease-in-out;
     object-fit: contain;
 }
-    
+
 .title-image:hover{
-    transform: translate(-50%, -50%) rotate(15deg);
+    transform: translateX(-50%) rotate(15deg);
 }
 
 .title-image2 {
     z-index: 20;
     display: block;
     position: absolute;
-    /* Desktop: Größe und Position unten */
-    max-width: 70vw; 
-    max-height: 80vh; 
+    max-width: 70vw;
+    max-height: 80vh;
     height: auto;
-    
-    /* Positioniert den unteren Rand des Bildes bei 90% der Höhe */
-    bottom: 5%;
+    bottom: var(--pad-bottom);
     left: 50%;
-    transform: translate(-50%, -100%);
-    
+    transform: translateX(-50%);
     object-fit: contain;
 }
-    .beschreibung{
-        display: block;
-        position:relative;
-        max-width: 20%;
-        left: 12%;
-        top: -25%;
-    }
-/* -------------------------------------- */
-/* PFEIL (ARROW) */
-/* -------------------------------------- */
+
 .arrow-icon {
     position: absolute;
     top: 50%;
-    right: 50px; /* Desktop: Rechts (oder left: 50px für links) - wie gewünscht */
-    transform: translateY(-50%); 
-    
-    width: 60px; 
+    right: 50px;
+    transform: translateY(-50%);
+    width: 60px;
     height: auto;
-    z-index: 40; 
+    z-index: 40;
     transition: transform 0.3s ease-in-out;
-    cursor: url('assets/Mouse/cursor_default.png') 16 16, pointer;
-    
-    /* Damit er auf Desktop immer sichtbar bleibt, falls JS ihn ausblendet */
-    opacity: 1 !important; 
+    cursor: url('Assets/Mouse/cursor_default.png') 16 16, pointer;
+    opacity: 1 !important;
     pointer-events: auto !important;
 }
 
 .arrow-icon:hover {
-    transform: translateY(-50%) scale(1.1); 
-    cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer; 
+    transform: translateY(-50%) scale(1.1);
+    cursor: url('Assets/Mouse/cursor_hover.png') 16 16, pointer;
 }
 
-/* -------------------------------------- */
-/* GRID LAYOUT SETUP */
-/* -------------------------------------- */
 :root {
-    --gap: 3vh; 
-    --pad-y: 9vh; 
-    --col-unit: calc((100vw - 12 * var(--gap)) / 12); 
-    --row-unit: calc((100vh - 2 * var(--pad-y) - 2 * var(--gap)) / 3);
+    --gap: 3vh;
+    --pad-top: 16vh;
+    --pad-bottom: var(--gap);
+    --col-unit: calc((100vw - 12 * var(--gap)) / 12);
+    --row-unit: calc((100vh - var(--pad-top) - var(--pad-bottom) - 2 * var(--gap)) / 3);
 }
 
 .seite2, .seite3 {
-    position: relative; 
-    display: block; 
-    padding: 0; 
+    position: relative;
+    display: block;
+    padding: 0;
 }
- 
+
 .grid-item {
-    background: #444; 
-    border: none; 
+    background: #444;
+    border: none;
+    border-radius: 0.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,240 +223,213 @@ html, body {
     color: white;
     box-sizing: border-box;
     z-index: 10;
-    position: absolute; 
-    opacity: 1; 
+    position: absolute;
+    opacity: 1;
     transition: none;
     overflow: hidden;
 }
 
 .grid-item:hover {
     background: #ffff;
-    color:black;    
+    color:black;
 }
 
 .grid-image {
-    width: 100%;       
-    height: 100%;      
-    object-fit: cover; 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
+    transition: transform 0.4s ease-out;
 }
 
 .item-label {
-    position: absolute; 
-    z-index: 20;        
+    position: absolute;
+    z-index: 20;
     font-size: 1.5rem;
-    color: white;
+    color: rgba(255, 255, 255, 0);
 }
 
-/* Overlay Effekte */
 .grid-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0); 
-    transition: background 0.3s ease-in-out; 
-    z-index: 15; 
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.3s ease-in-out;
+    z-index: 15;
 }
 .grid-item:hover .grid-image {
-    transform: scale(1.1); 
-    transition: transform 0.4s ease-out; 
+    transform: scale(1.1);
+    transition: transform 0.4s ease-out;
 }
 .grid-item:hover .item-label {
     color: black;
     transition: color 0.3s ease;
 }
-.grid-image {
-    transition: transform 0.4s ease-out;
-}
-.item-label {
-    position: absolute; 
-    z-index: 20; 
-    color: rgba(255, 255, 255, 0); 
-}
 
-/* -------------------------------------- */
-/* GRID POSITIONEN (SEITE 2 & 3) */
-/* -------------------------------------- */
-/* Seite 2 */
-.s2-item-3 { left: calc(0 * var(--col-unit) + 1 * var(--gap)); top: var(--pad-y); width: calc(3 * var(--col-unit) + 2 * var(--gap)); height: var(--row-unit); } 
-.s2-item-4 { left: calc(3 * var(--col-unit) + 4 * var(--gap)); top: var(--pad-y); width: calc(4 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); background: #0077ff; z-index: 1; } 
-.s2-item-5 { left: calc(9 * var(--col-unit) + 10 * var(--gap)); top: var(--pad-y); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
-.s2-item-10 { left: calc(0 * var(--col-unit) + 1 * var(--gap)); top: calc(var(--pad-y) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(4 * var(--col-unit) + 2 * var(--gap)); height: var(--row-unit); } 
-.s2-item-11 { left: calc(4 * var(--col-unit) + 4 * var(--gap)); top: calc(var(--pad-y) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
-.s2-item-6 { left: calc(9 * var(--col-unit) + 10 * var(--gap)); top: calc(var(--pad-y) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: calc(2 * var(--row-unit) + 1 * var(--gap)); }
-.s2-item-15 { left: calc(0 * var(--col-unit) + 1 * var(--gap)); top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(2 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); } 
-.s2-item-16 { left: calc(2 * var(--col-unit) + 3 * var(--gap)); top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(4 * var(--col-unit) + 0 * var(--gap)); height: var(--row-unit); } 
-.s2-item-17 { left: calc(6 * var(--col-unit) + 4 * var(--gap)); top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(3 * var(--col-unit) + 5 * var(--gap)); height: var(--row-unit); } 
-.s2-item-18 { left: calc(7 * var(--col-unit) + 6 * var(--gap)); top: var(--pad-y); width: calc(2 * var(--col-unit) + 3 * var(--gap)); height: calc(2 * var(--row-unit) + 1 * var(--gap)); } 
- 
-/* Seite 3 */
-.s3-item-7 { left: 0; top: var(--pad-y); width: calc(4 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); } 
-.s3-item-1 { left: calc(4 * var(--col-unit) + 4 * var(--gap)); top: var(--pad-y); width: calc(4 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); background: #ff6600; z-index: 1; }
-.s3-item-2 { left: calc(8 * var(--col-unit) + 8 * var(--gap)); top: var(--pad-y); width: calc(4 * var(--col-unit) + 3 * var(--gap)); height: calc(2 * var(--row-unit) + 1 * var(--gap)); } 
-.s3-item-12 { left: 0; top: calc(var(--pad-y) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); } 
-.s3-item-13 { left: calc(3 * var(--col-unit) + 2 * var(--gap)); top: calc(var(--pad-y) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); } 
-.s3-item-8 { left: calc(6 * var(--col-unit) + 4 * var(--gap)); top: calc(var(--pad-y) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(2 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); }
-.s3-item-9 { left: calc(9 * var(--col-unit) + 8 * var(--gap)); top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(3 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); } 
-.s3-item-19 { left: 0; top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(2 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); } 
-.s3-item-20 { left: calc(2 * var(--col-unit) + 2 * var(--gap)); top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(3 * var(--col-unit) + 4 * var(--gap)); height: var(--row-unit); } 
-.s3-item-14 { left: calc(5 * var(--col-unit) + 7 * var(--gap)); top: calc(var(--pad-y) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(4 * var(--col-unit) + 0 * var(--gap)); height: var(--row-unit); }
- 
-/* -------------------------------------- */
-/* BUTTONS & UI */
-/* -------------------------------------- */
+.s2-item-3 { left: calc(0 * var(--col-unit) + 1 * var(--gap)); top: var(--pad-top); width: calc(3 * var(--col-unit) + 2 * var(--gap)); height: var(--row-unit); }
+.s2-item-4 { left: calc(3 * var(--col-unit) + 4 * var(--gap)); top: var(--pad-top); width: calc(4 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); background: #0077ff; z-index: 1; }
+.s2-item-5 { left: calc(9 * var(--col-unit) + 10 * var(--gap)); top: var(--pad-top); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
+.s2-item-10 { left: calc(0 * var(--col-unit) + 1 * var(--gap)); top: calc(var(--pad-top) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(4 * var(--col-unit) + 2 * var(--gap)); height: var(--row-unit); }
+.s2-item-11 { left: calc(4 * var(--col-unit) + 4 * var(--gap)); top: calc(var(--pad-top) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
+.s2-item-6 { left: calc(9 * var(--col-unit) + 10 * var(--gap)); top: calc(var(--pad-top) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: calc(2 * var(--row-unit) + 1 * var(--gap)); }
+.s2-item-15 { left: calc(0 * var(--col-unit) + 1 * var(--gap)); top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(2 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
+.s2-item-16 { left: calc(2 * var(--col-unit) + 3 * var(--gap)); top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(4 * var(--col-unit) + 0 * var(--gap)); height: var(--row-unit); }
+.s2-item-17 { left: calc(6 * var(--col-unit) + 4 * var(--gap)); top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(3 * var(--col-unit) + 5 * var(--gap)); height: var(--row-unit); }
+.s2-item-18 { left: calc(7 * var(--col-unit) + 6 * var(--gap)); top: var(--pad-top); width: calc(2 * var(--col-unit) + 3 * var(--gap)); height: calc(2 * var(--row-unit) + 1 * var(--gap)); }
+
+.s3-item-7 { left: 0; top: var(--pad-top); width: calc(4 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); }
+.s3-item-1 { left: calc(4 * var(--col-unit) + 4 * var(--gap)); top: var(--pad-top); width: calc(4 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); background: #ff6600; z-index: 1; }
+.s3-item-2 { left: calc(8 * var(--col-unit) + 8 * var(--gap)); top: var(--pad-top); width: calc(4 * var(--col-unit) + 3 * var(--gap)); height: calc(2 * var(--row-unit) + 1 * var(--gap)); }
+.s3-item-12 { left: 0; top: calc(var(--pad-top) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
+.s3-item-13 { left: calc(3 * var(--col-unit) + 2 * var(--gap)); top: calc(var(--pad-top) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(3 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
+.s3-item-8 { left: calc(6 * var(--col-unit) + 4 * var(--gap)); top: calc(var(--pad-top) + 1 * var(--row-unit) + 1 * var(--gap)); width: calc(2 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); }
+.s3-item-9 { left: calc(9 * var(--col-unit) + 8 * var(--gap)); top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(3 * var(--col-unit) + 3 * var(--gap)); height: var(--row-unit); }
+.s3-item-19 { left: 0; top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(2 * var(--col-unit) + 1 * var(--gap)); height: var(--row-unit); }
+.s3-item-20 { left: calc(2 * var(--col-unit) + 2 * var(--gap)); top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(3 * var(--col-unit) + 4 * var(--gap)); height: var(--row-unit); }
+.s3-item-14 { left: calc(5 * var(--col-unit) + 7 * var(--gap)); top: calc(var(--pad-top) + 2 * var(--row-unit) + 2 * var(--gap)); width: calc(4 * var(--col-unit) + 0 * var(--gap)); height: var(--row-unit); }
+
 #scrollContainer { position: relative; }
 
 #backButton {
-    position: fixed; 
+    position: fixed;
     top: 1vh;
-    left: 50%; 
+    left: 50%;
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    padding-top: 10px; 
-    min-width: 300px; 
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
     height: 7vh;
     border: none;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0); 
-    color: black; 
+    background: rgba(255, 255, 255, 0);
+    color: black;
     font-size: 1rem;
     font-weight: bold;
-    line-height: normal; 
+    line-height: normal;
     text-align: center;
     padding: 0;
-    z-index: 50; 
+    z-index: 50;
     transition: transform 0.4s ease-out, opacity 0.4s ease;
     transform: translate(-50%, -100%);
     opacity: 0;
+    pointer-events: none;
 }
 #backButton.visible {
-    transform: translate(-50%, 0); 
+    transform: translate(-50%, 0);
     opacity: 1;
+    pointer-events: auto;
 }
-/* Cursor Customization */
+
 .grid-item:hover, #backButton:hover {
-    cursor: url('assets/Mouse/cursor_hover.png') 16 16, pointer; 
+    cursor: url('Assets/Mouse/cursor_hover.png') 16 16, pointer;
 }
 .grid-item:active, #backButton:active {
-    cursor: url('assets/Mouse/cursor_active.png') 16 16, pointer; 
+    cursor: url('Assets/Mouse/cursor_active.png') 16 16, pointer;
 }
 input[type="text"], textarea {
-    cursor: url('assets/Mouse/cursor_text.png') 16 16, text;
+    cursor: url('Assets/Mouse/cursor_text.png') 16 16, text;
 }
 
-/* ************************************************* */
-/* 📱 MOBILE OPTIMIERUNG (Max-Breite 768px) */
-/* ************************************************* */
 @media screen and (max-width: 768px) {
-    
-    /* --- Globale Mobile Variable --- */
     :root {
-        --mobile-vw-multiplier: 2; /* Seite 2 und 3 sind doppelt so breit */
-        --mobile-width: calc(100vw * var(--mobile-vw-multiplier)); 
-        --col-unit: calc((var(--mobile-width) - 12 * var(--gap)) / 12); 
-    }
-    
-    html, body {
-        cursor: auto !important; /* Normaler Cursor auf Handy */
+        --mobile-vw-multiplier: 2;
+        --mobile-width: calc(100vw * var(--mobile-vw-multiplier));
+        --col-unit: calc((var(--mobile-width) - 12 * var(--gap)) / 12);
+        --font-heading: 2.75rem;
     }
 
-    /* --- SEITE 1: FLEXBOX ZENTRIERUNG --- */
-    /* Wir nutzen Flexbox, um ALLES automatisch untereinander zu zentrieren */
+    html, body {
+        cursor: auto !important;
+    }
+
     .page.seite1 {
-        flex-direction: column; 
-        justify-content: center; /* Vertikal mittig im Viewport */
-        align-items: center;     /* Horizontal mittig */
-        padding: 5vh 5vw;        /* Etwas Abstand zum Rand */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 5vh 5vw;
         width: 100vw;
     }
 
-    /* --- ELEMENTE AUF SEITE 1 RESETTEN --- */
-    /* Wichtig: Absolute Positionierung entfernen, damit sie sich stapeln */
-    .header-text-container, 
-    .title-image, 
+    .header-text-container,
+    .title-image,
     .title-image2 {
-        position: relative !important; 
+        position: relative !important;
         top: auto !important;
+        bottom: auto !important;
         left: auto !important;
         right: auto !important;
-        transform: none !important; /* Keine Rotation, keine Verschiebung */
-        margin: 2vh 0; /* Abstand zwischen den Elementen */
+        transform: none !important;
+        margin: 2vh 0;
     }
 
-    /* --- TEXT --- */
     .header-text-container {
         width: 90%;
         max-width: none;
         text-align: center;
-        order: 1; /* Kommt als Erstes */
+        order: 1;
     }
-    .header-text-container h1 { font-size: 3rem; }
-    .header-text-container p { font-size: 1.2rem; }
-    
-    /* --- BILD 1 (CHARACTER) --- */
+    .header-text-container h1 { font-size: var(--font-heading); }
+    .header-text-container p { font-size: var(--font-body); }
+
     .title-image {
-        order: 2; /* Kommt als Zweites (Mitte) */
+        order: 2;
         max-width: 80vw;
-        max-height: 40vh; /* Damit es nicht den ganzen Screen füllt */
+        max-height: 40vh;
     }
 
-    /* --- BILD 2 (TITEL SCHRIFT) --- */
     .title-image2 {
-        order: 3; /* Kommt als Drittes (Unten) */
+        order: 3;
         max-width: 90vw;
-        max-height: 20vh; 
+        max-height: 20vh;
     }
 
-    /* --- PFEIL FIXIERT (LINKS) --- */
-    /* Der Pfeil bleibt absolut/fixiert, da er nicht mitscrollen soll */
+    .nav-menu {
+        position: relative;
+        top: auto;
+        right: auto;
+        order: 4;
+        flex-direction: row;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 1vh 0 3vh;
+    }
+    .nav-menu-link {
+        text-align: center;
+    }
+
     .arrow-icon {
-        position: fixed; 
+        position: fixed;
         top: 50%;
-        right: 10px; /* Links am Rand */
+        right: 10px;
         left: auto;
         transform: translateY(-50%);
         width: 50px;
         z-index: 100;
         cursor: auto;
-        /* Wir überschreiben die Desktop-Eigenschaften */
-        opacity: 1; /* Initial sichtbar */
+        opacity: 1;
     }
-    .arrow-icon:hover { 
+    .arrow-icon:hover {
         transform: translateY(-50%);
     }
 
-    /* --- SEITE 2 & 3 (Breiter machen) --- */
     .page.seite2, .page.seite3 {
         width: var(--mobile-width);
         justify-content: flex-start;
         align-items: flex-start;
-        padding: var(--pad-y) var(--gap);
+        padding: var(--pad-top) var(--gap) var(--pad-bottom) var(--gap);
     }
-    #progressBar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            height: 6px; /* Dünne Linie */
-            background-color: black;
-            width: 0%; /* Startet bei 0 */
-            z-index: 100;
-            transition: width 0.1s linear; /* Weicher Übergang beim Scrollen */
-        }
     .sticker1 {
-            /* Positioniert die gesamte Galerie leicht rechts und zentriert auf der Seite */
             position: absolute;
             top: 30%;
-            left: 10vh; 
+            left: 10vh;
             transform: translate(-50%, -50%);
-            width: 20vw; /* Containerbreite */
-            height: 10vh; /* Containerhöhe */
+            width: 20vw;
+            height: 10vh;
             max-width: 200px;
             max-height: 100px;
-            /* Stellt sicher, dass die Bilder innerhalb des Containers frei positioniert werden können */
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: visible; 
+            overflow: visible;
         }
 }
 </style>
@@ -475,216 +437,218 @@ input[type="text"], textarea {
 <body>
   <div id="scrollContainer" class="scroll-container">
       <button id="backButton" onclick="backToPage1()"><img class="header-image" src="Assets/title_shrift.gif"></button>
-    
+
     <section class="page seite1">
         <div class="header-text-container">
             <h1>Tobias Lechner</h1>
             <p>Hi, I'm Tobi. A creative mind, with skills in Graphic Design, Graffiti, Animation, Videography and Storytelling. </p>
-            <a href="About.html" class="header-text-link">More about me...</a>
         </div>
-        <a href="mailto:tobile3107@gmail.com?">
+        <nav class="nav-menu">
+            <a href="#page seite2" class="nav-menu-link" onclick="jumpToPage2()">Work</a>
+            <a href="About.html" class="nav-menu-link">About</a>
+            <a href="Contact.html" class="nav-menu-link">Contact</a>
+        </nav>
+        <a href="https://www.instagram.com/zaxig/">
                  <div class="sticker1">
                 <div class="hellosticker" style=" transform: rotate(15deg); z-index: 20;">
-                    <img src="Assets/HelloSticker.png"  alt="Mail">
+                    <img src="Assets/HelloSticker.png"  alt="Instagram">
                 </div>
                  </div>
                  </a>
         <img src="3D Charakter/3D-Charakter.png" alt="Actionfigure Tobi" class="title-image">
         <img src="Assets/title_shrift.gif" alt="titel" class="title-image2">
-         <img src="Assets/Beschriftung/Beschreibung.gif" alt="beschreibung" class="beschreibung">
-        <!-- Pfeil -->
+
         <a href="#page seite2" class="arrow-icon-container nav-arrow" onclick="jumpToPage2()">
                 <img src="Assets/Pfeil.png" alt="Pfeil" class="arrow-icon">
             </a>
-        
+
     </section>
 
     <section class="page seite2">
-      
-        <a href="Projects.html#project6" class="grid-item s2-item-3">
+
+        <a href="Projects.html#project1" class="grid-item s2-item-3">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Humppy%20App_001-min.jpg" alt="Smartphone" class="grid-image">
+            <img src="Bilder/Kasterl/BA_LECHNER-1.jpg" alt="Bling-Data Poster" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
+
       <a href="Projects.html#project3" class="grid-item s2-item-4">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/3D%20Modell-mini.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/Dreamworld_02.png" alt="Dream World Magazine" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
-        <a href="Projects.html#project5" class="grid-item s2-item-5">
+
+        <a href="Projects.html#project4" class="grid-item s2-item-5">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/GemSel_01.png" alt="Standbild Doku" class="grid-image">
+            <img src="Bilder/Kasterl/01_BMW%20AB%20Closed.png" alt="BMW Magazin geschlossen" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
-      <a href="Projects.html#project2" class="grid-item s2-item-6">
+
+      <a href="Projects.html#project7" class="grid-item s2-item-6">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_01.png" alt="Plakat" class="grid-image">
+            <img src="Bilder/Kasterl/Grauzone_02.png" alt="Grauzone Plakat" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-    
-         <a href="Projects.html#project2" class="grid-item s2-item-10">
+
+         <a href="Projects.html#project5" class="grid-item s2-item-10">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_04.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/DD_logo.png" alt="Daily Drama Logo" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-        
-          <a href="Projects.html#project4" class="grid-item s2-item-11">
+
+          <a href="Projects.html#project6" class="grid-item s2-item-11">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/01_BMW%20AB%20Closed.png" alt="Magazin geschlossen" class="grid-image">
+            <img src="Bilder/Kasterl/3D%20Modell-mini.png" alt="3D-Animation Standbild" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-        
-      <a href="Projects.html#project3" class="grid-item s2-item-15">
+
+      <a href="Projects.html#project2" class="grid-item s2-item-15">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Mocap_Animation_02-min.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/Storypost%204.png" alt="Matchday Storypost" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
-        <a href="Projects.html#project5" class="grid-item s2-item-16">
+
+        <a href="Projects.html#project1" class="grid-item s2-item-16">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/GemSel_04.png" alt="Standbild Doku" class="grid-image">
+            <img src="Bilder/Kasterl/BA_LECHNER-2.jpg" alt="Bling-Data Poster" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
             </a>
                 <a href="Projects.html#project4" class="grid-item s2-item-17">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/01_BMW%20AB%204-5.png" alt="Magazin offen" class="grid-image">
+            <img src="Bilder/Kasterl/01_BMW%20AB%204-5.png" alt="BMW Magazin offen" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-            
-      <a href="Projects.html#project1" class="grid-item s2-item-18">
+
+      <a href="Projects.html#project2" class="grid-item s2-item-18">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Dreamworld_04.png" alt="Plakate" class="grid-image">
+            <img src="Bilder/Kasterl/Storypost%202.png" alt="Matchday Storypost" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-            
+
     </section>
-    
+
     <section class="page seite3">
-        
-        <a href="Projects.html#project4" class="grid-item s3-item-1">
+
+        <a href="Projects.html#project3" class="grid-item s3-item-1">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/01_BMW%20AB%206-7.png" alt="Magazin offen" class="grid-image">
-            <span class="item-label"></span>
-        </a>
-        
-      <a href="Projects.html#project1" class="grid-item s3-item-2">
-          <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/01_Magazine%20Closed.png" alt="Magazin geschlossen" class="grid-image">
+            <img src="Bilder/Kasterl/Dreamworld_04.png" alt="Dream World Magazine" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
 
-        <a href="Projects.html#project2" class="grid-item s3-item-7">
+      <a href="Projects.html#project2" class="grid-item s3-item-2">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_03.png" alt="Magazin geschlossen" class="grid-image">
+            <img src="Bilder/Kasterl/Storypost%201.png" alt="Matchday Storypost" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-        
-       <a href="Projects.html#project2" class="grid-item s3-item-8">
+
+        <a href="Projects.html#project6" class="grid-item s3-item-7">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_01.png" alt="Plakat" class="grid-image">
-            <span class="item-label"></span>
-          </a>
-      
-        <a href="Projects.html#project3" class="grid-item s3-item-13">
-          <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/3D%20Modell-mini_02.png" alt="Magazin offen" class="grid-image">
-            <span class="item-label"></span>
-          </a>
-        
-        <a href="Projects.html#project1" class="grid-item s3-item-12">
-          <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Dreamworld_02.png" alt="Plakate" class="grid-image">
-            <span class="item-label"></span>
-          </a>
-        
-        <a href="Projects.html#project6" class="grid-item s3-item-9">
-          <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Humppy%20App_003-min.jpg" alt="Smartphone" class="grid-image">
-            <span class="item-label"></span>
-          </a>
-        
-        <a href="Projects.html#project5" class="grid-item s3-item-14">
-          <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/GemSel_03.png" alt="Standbild Doku" class="grid-image">
-            <span class="item-label"></span>
-          </a>
-         <a href="Projects.html#project3" class="grid-item s3-item-19">
-          <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Mocap_Animation_01-min.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/Mocap_Animation_02-min.png" alt="3D-Animation Mocap" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-         <a href="Projects.html#project2" class="grid-item s3-item-20">
+
+       <a href="Projects.html#project1" class="grid-item s3-item-8">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_02.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/BA_LECHNER-3.jpg" alt="Bling-Data Poster" class="grid-image" loading="lazy" decoding="async">
+            <span class="item-label"></span>
+          </a>
+
+        <a href="Projects.html#project7" class="grid-item s3-item-13">
+          <div class="grid-overlay"></div>
+            <img src="Bilder/Kasterl/GemSel_02.png" alt="Gemeinsam Selbstständig Standbild" class="grid-image" loading="lazy" decoding="async">
+            <span class="item-label"></span>
+          </a>
+
+        <a href="Projects.html#project5" class="grid-item s3-item-12">
+          <div class="grid-overlay"></div>
+            <img src="Bilder/Kasterl/a%26e_logo.png" alt="a&amp;e Logo" class="grid-image" loading="lazy" decoding="async">
+            <span class="item-label"></span>
+          </a>
+
+        <a href="Projects.html#project3" class="grid-item s3-item-9">
+          <div class="grid-overlay"></div>
+            <img src="Bilder/Kasterl/01_Magazine%20Closed.png" alt="Dream World Magazine geschlossen" class="grid-image" loading="lazy" decoding="async">
+            <span class="item-label"></span>
+          </a>
+
+        <a href="Projects.html#project4" class="grid-item s3-item-14">
+          <div class="grid-overlay"></div>
+            <img src="Bilder/Kasterl/01_BMW%20AB%206-7.png" alt="BMW Magazin offen" class="grid-image" loading="lazy" decoding="async">
+            <span class="item-label"></span>
+          </a>
+         <a href="Projects.html#project2" class="grid-item s3-item-19">
+          <div class="grid-overlay"></div>
+            <img src="Bilder/Kasterl/Storypost%206.png" alt="Matchday Storypost" class="grid-image" loading="lazy" decoding="async">
+            <span class="item-label"></span>
+        </a>
+         <a href="Projects.html#project6" class="grid-item s3-item-20">
+          <div class="grid-overlay"></div>
+            <img src="Bilder/Kasterl/Orvion%20Commercial.png" alt="3D-Animation Orvion Commercial" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
     </section>
 
-    <!-- Kopie von Seite 2 für Loop -->
     <section class="page seite2">
-      
-        <a href="Projects.html#project6" class="grid-item s2-item-3">
+
+        <a href="Projects.html#project1" class="grid-item s2-item-3">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Humppy%20App_001-min.jpg" alt="Smartphone" class="grid-image">
+            <img src="Bilder/Kasterl/BA_LECHNER-1.jpg" alt="Bling-Data Poster" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
+
       <a href="Projects.html#project3" class="grid-item s2-item-4">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/3D%20Modell-mini.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/Dreamworld_02.png" alt="Dream World Magazine" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
-        <a href="Projects.html#project5" class="grid-item s2-item-5">
+
+        <a href="Projects.html#project4" class="grid-item s2-item-5">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/GemSel_01.png" alt="Standbild Doku" class="grid-image">
+            <img src="Bilder/Kasterl/01_BMW%20AB%20Closed.png" alt="BMW Magazin geschlossen" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
-      <a href="Projects.html#project2" class="grid-item s2-item-6">
+
+      <a href="Projects.html#project7" class="grid-item s2-item-6">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_01.png" alt="Plakat" class="grid-image">
+            <img src="Bilder/Kasterl/Grauzone_02.png" alt="Grauzone Plakat" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-    
-         <a href="Projects.html#project2" class="grid-item s2-item-10">
+
+         <a href="Projects.html#project5" class="grid-item s2-item-10">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Grauzone_04.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/DD_logo.png" alt="Daily Drama Logo" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-        
-          <a href="Projects.html#project4" class="grid-item s2-item-11">
+
+          <a href="Projects.html#project6" class="grid-item s2-item-11">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/01_BMW%20AB%20Closed.png" alt="Magazin geschlossen" class="grid-image">
+            <img src="Bilder/Kasterl/3D%20Modell-mini.png" alt="3D-Animation Standbild" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-        
-      <a href="Projects.html#project3" class="grid-item s2-item-15">
+
+      <a href="Projects.html#project2" class="grid-item s2-item-15">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Mocap_Animation_02-min.png" alt="Standbild" class="grid-image">
+            <img src="Bilder/Kasterl/Storypost%204.png" alt="Matchday Storypost" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
           </a>
-        
-        <a href="Projects.html#project5" class="grid-item s2-item-16">
+
+        <a href="Projects.html#project1" class="grid-item s2-item-16">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/GemSel_04.png" alt="Standbild Doku" class="grid-image">
+            <img src="Bilder/Kasterl/BA_LECHNER-2.jpg" alt="Bling-Data Poster" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
             </a>
                 <a href="Projects.html#project4" class="grid-item s2-item-17">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/01_BMW%20AB%204-5.png" alt="Magazin offen" class="grid-image">
+            <img src="Bilder/Kasterl/01_BMW%20AB%204-5.png" alt="BMW Magazin offen" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-            
-      <a href="Projects.html#project1" class="grid-item s2-item-18">
+
+      <a href="Projects.html#project2" class="grid-item s2-item-18">
           <div class="grid-overlay"></div>
-            <img src="Bilder/Kasterl/Dreamworld_04.png" alt="Plakate" class="grid-image">
+            <img src="Bilder/Kasterl/Storypost%202.png" alt="Matchday Storypost" class="grid-image" loading="lazy" decoding="async">
             <span class="item-label"></span>
         </a>
-            
+
     </section>
   </div>
 
@@ -692,96 +656,66 @@ input[type="text"], textarea {
 (function () {
   const container = document.getElementById('scrollContainer');
   const backButton = document.getElementById('backButton');
-  // NEU: Selektiert das Pfeil-Element
   const arrowIcon = document.querySelector('.arrow-icon');
-  let scrollSpeedFactor = 2; 
-  
-  // Funktion zur Überprüfung, ob die mobile Ansicht aktiv ist
+  let scrollSpeedFactor = 2;
   const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
-
-  // === 1. GLATTE SCROLL-LOGIK (Mausrad) ===
   window.addEventListener('wheel', (e) => {
     e.preventDefault();
-    
     let delta = e.deltaY || e.deltaX;
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         delta = e.deltaX;
     }
-    
+
     let scrollAmount = 0;
-    if (Math.abs(delta) < 10) { 
+    if (Math.abs(delta) < 10) {
         scrollAmount = Math.sign(delta) * 5 * scrollSpeedFactor;
     } else {
         scrollAmount = delta * scrollSpeedFactor;
     }
 
-    // Die Scroll-Blockade wurde entfernt, um ein reibungsloses Zurückscrollen
-    // von Seite 2 zu Seite 1 zu ermöglichen.
-    
     container.scrollBy({
         left: scrollAmount,
-        behavior: 'auto' 
+        behavior: 'auto'
     });
-    
   }, { passive: false });
-
-
-  // === 2. SCROLL EVENTS (Sichtbarkeit & Loop) ===
   container.addEventListener('scroll', () => {
     const pageWidth = window.innerWidth;
     const scrollPos = container.scrollLeft;
-    
-    // --- Loop Berechnung ---
     let loopEndPos;
     let newScrollPos;
-      
-     
-    
     if (isMobile()) {
-        const mobilePageWidth = pageWidth * 2; // Entspricht --mobile-vw-multiplier: 2
-        // Seite 1 (100vw) + Seite 2 (200vw) + Seite 3 (200vw) = 500vw Loop Ende
+        const mobilePageWidth = pageWidth * 2;
         loopEndPos = pageWidth + mobilePageWidth + mobilePageWidth;
-        newScrollPos = pageWidth; 
+        newScrollPos = pageWidth;
     } else {
-        // Desktop: Seite 1 (1x) + Seite 2 (1x) + Seite 3 (1x) = 3x (Kopie beginnt bei 3x)
-        loopEndPos = 3 * pageWidth; 
-        newScrollPos = pageWidth; // Der eigentliche Start der Inhalte (Seite 2)
+        loopEndPos = 3 * pageWidth;
+        newScrollPos = pageWidth;
     }
 
-    // --- Button & Pfeil Sichtbarkeit ---
     const startOfPage1 = pageWidth;
-    if (scrollPos > startOfPage1 * 0.5) { // Button anzeigen, sobald man die Hälfte von Seite 1 hinter sich hat
+    if (scrollPos > startOfPage1 * 0.5) {
         backButton.classList.add('visible');
-        
-        // Handy: Pfeil verstecken, wenn man nicht auf Seite 1 ist
         if (isMobile()) {
             arrowIcon.style.opacity = '0';
             arrowIcon.style.pointerEvents = 'none';
         }
     } else {
         backButton.classList.remove('visible');
-        
-        // Handy: Pfeil wieder anzeigen auf Seite 1
         if (isMobile()) {
             arrowIcon.style.opacity = '1';
             arrowIcon.style.pointerEvents = 'auto';
         }
     }
-    
-    // --- ENDLOS-LOOP ---
+
     if (scrollPos >= loopEndPos) {
         const offsetIntoLoopEnd = scrollPos - loopEndPos;
-        
-        container.style.scrollBehavior = 'auto'; 
+        container.style.scrollBehavior = 'auto';
         container.scrollLeft = newScrollPos + offsetIntoLoopEnd;
-
         requestAnimationFrame(() => {
             container.style.scrollBehavior = 'smooth';
-        }); 
+        });
     }
-    
   });
-  
   window.backToPage1 = function() {
     container.scrollTo({ left: 0, behavior: 'smooth' });
   }
@@ -790,7 +724,7 @@ input[type="text"], textarea {
     const pageWidth = window.innerWidth;
     container.scrollTo({ left: pageWidth, behavior: 'smooth' });
   }
-  
+
   container.style.scrollBehavior = 'smooth';
 })();
 </script>
