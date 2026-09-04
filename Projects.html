@@ -301,6 +301,7 @@
         }
 
         #global-overlay-image {
+            display: block;
             max-width: 80vw;
             max-height: 80vh;
             object-fit: contain;
@@ -312,6 +313,79 @@
 
         #global-image-overlay.visible #global-overlay-image {
             transform: scale(1);
+        }
+
+        #global-overlay-image-wrap {
+            position: relative;
+            display: inline-block;
+        }
+
+        #global-overlay-close,
+        #global-overlay-prev,
+        #global-overlay-next {
+            display: none;
+            padding: 0;
+            border: none;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #global-overlay-close img,
+        #global-overlay-prev img,
+        #global-overlay-next img {
+            display: block;
+        }
+
+        #global-overlay-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(50%, -50%);
+            width: 36px;
+            height: 36px;
+        }
+
+        #global-overlay-close img {
+            width: 18px;
+            height: 18px;
+        }
+
+        #global-overlay-prev,
+        #global-overlay-next {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+        }
+
+        #global-overlay-prev {
+            left: 4vw;
+        }
+
+        #global-overlay-next {
+            right: 4vw;
+        }
+
+        #global-overlay-prev img,
+        #global-overlay-next img {
+            width: 20px;
+            height: 20px;
+        }
+
+        #global-overlay-prev img {
+            transform: scaleX(-1);
+        }
+
+        #global-image-overlay.is-mobile-active #global-overlay-close {
+            display: flex;
+        }
+
+        #global-image-overlay.is-mobile-active.has-multiple #global-overlay-prev,
+        #global-image-overlay.is-mobile-active.has-multiple #global-overlay-next {
+            display: flex;
         }
 
         #progressBar {
@@ -732,7 +806,18 @@
     </div>
 
     <div id="global-image-overlay">
-        <img id="global-overlay-image" src="" alt="Vergrößertes Projektbild">
+        <button id="global-overlay-prev" aria-label="Vorheriges Bild">
+            <img src="Assets/Pfeil.png" alt="">
+        </button>
+        <div id="global-overlay-image-wrap">
+            <img id="global-overlay-image" src="" alt="Vergrößertes Projektbild">
+            <button id="global-overlay-close" aria-label="Schließen">
+                <img src="Assets/x.png" alt="">
+            </button>
+        </div>
+        <button id="global-overlay-next" aria-label="Nächstes Bild">
+            <img src="Assets/Pfeil.png" alt="">
+        </button>
     </div>
 
     <script>
@@ -749,6 +834,9 @@
             const imageThumbnails = document.querySelectorAll('.image-thumbnail');
             const globalImageOverlay = document.getElementById('global-image-overlay');
             const globalOverlayImage = document.getElementById('global-overlay-image');
+            const globalOverlayClose = document.getElementById('global-overlay-close');
+            const globalOverlayPrev = document.getElementById('global-overlay-prev');
+            const globalOverlayNext = document.getElementById('global-overlay-next');
             const navArrows = document.querySelectorAll('.nav-arrow');
             const backButton = document.getElementById('backButton');
             const totalUniquePages = 7;
@@ -841,8 +929,16 @@
             function hideGlobalOverlay() {
                 globalImageOverlay.classList.remove('visible');
                 globalImageOverlay.classList.remove('is-mobile-active');
+                globalImageOverlay.classList.remove('has-multiple');
                 currentOverlayThumbnails = [];
                 currentOverlayIndex = -1;
+            }
+
+            function showOverlayImageAt(index) {
+                if (!currentOverlayThumbnails.length) return;
+                currentOverlayIndex = (index + currentOverlayThumbnails.length) % currentOverlayThumbnails.length;
+                const src = currentOverlayThumbnails[currentOverlayIndex].getAttribute('data-full-src');
+                if (src) globalOverlayImage.src = src;
             }
 
             navArrows.forEach(arrow => {
@@ -874,6 +970,7 @@
                                 ? Array.from(grid.querySelectorAll('.image-thumbnail[data-full-src]'))
                                 : [thumbnail];
                             currentOverlayIndex = currentOverlayThumbnails.indexOf(thumbnail);
+                            globalImageOverlay.classList.toggle('has-multiple', currentOverlayThumbnails.length > 1);
                             showGlobalOverlay(fullSrc, true);
                         }
                     }, LONG_PRESS_DURATION);
@@ -899,21 +996,20 @@
                     if (isTouchDevice) e.preventDefault();
                 });
             });
-            globalImageOverlay.addEventListener('click', (event) => {
-                if (event.target === globalOverlayImage) {
-                    const isMobilePeek = globalImageOverlay.classList.contains('is-mobile-active');
-                    if (isMobilePeek && currentOverlayThumbnails.length > 1) {
-                        currentOverlayIndex = (currentOverlayIndex + 1) % currentOverlayThumbnails.length;
-                        const nextSrc = currentOverlayThumbnails[currentOverlayIndex].getAttribute('data-full-src');
-                        if (nextSrc) globalOverlayImage.src = nextSrc;
-                    } else {
-                        hideGlobalOverlay();
-                    }
-                    return;
-                }
-                if (event.target === globalImageOverlay) {
-                    hideGlobalOverlay();
-                }
+            globalImageOverlay.addEventListener('click', () => {
+                hideGlobalOverlay();
+            });
+            globalOverlayClose.addEventListener('click', (event) => {
+                event.stopPropagation();
+                hideGlobalOverlay();
+            });
+            globalOverlayPrev.addEventListener('click', (event) => {
+                event.stopPropagation();
+                showOverlayImageAt(currentOverlayIndex - 1);
+            });
+            globalOverlayNext.addEventListener('click', (event) => {
+                event.stopPropagation();
+                showOverlayImageAt(currentOverlayIndex + 1);
             });
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && globalImageOverlay.classList.contains('visible')) {
