@@ -326,7 +326,8 @@
             display: none;
             padding: 0;
             border: none;
-            background: rgba(0, 0, 0, 0.6);
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
             border-radius: 50%;
             align-items: center;
             justify-content: center;
@@ -841,11 +842,9 @@
             const backButton = document.getElementById('backButton');
             const totalUniquePages = 7;
             const projectIds = ['project1', 'project2', 'project3', 'project4', 'project5', 'project6', 'project7'];
-            let pressTimer;
             let startX, startY;
             let currentOverlayThumbnails = [];
             let currentOverlayIndex = -1;
-            const LONG_PRESS_DURATION = 350;
             const MOVE_TOLERANCE = 10;
             const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
             backButton.classList.add('visible');
@@ -962,34 +961,24 @@
                     const touch = e.touches[0];
                     startX = touch.clientX;
                     startY = touch.clientY;
-                    const fullSrc = thumbnail.getAttribute('data-full-src');
-                    pressTimer = setTimeout(() => {
-                        if (fullSrc) {
-                            const grid = thumbnail.closest('.image-grid');
-                            currentOverlayThumbnails = grid
-                                ? Array.from(grid.querySelectorAll('.image-thumbnail[data-full-src]'))
-                                : [thumbnail];
-                            currentOverlayIndex = currentOverlayThumbnails.indexOf(thumbnail);
-                            globalImageOverlay.classList.toggle('has-multiple', currentOverlayThumbnails.length > 1);
-                            showGlobalOverlay(fullSrc, true);
-                        }
-                    }, LONG_PRESS_DURATION);
-                }, { passive: true });
-                thumbnail.addEventListener('touchmove', (e) => {
-                    const touch = e.touches[0];
-                    const deltaX = Math.abs(touch.clientX - startX);
-                    const deltaY = Math.abs(touch.clientY - startY);
-                    if (deltaX > MOVE_TOLERANCE || deltaY > MOVE_TOLERANCE) {
-                        clearTimeout(pressTimer);
-                    }
                 }, { passive: true });
                 thumbnail.addEventListener('touchend', (e) => {
-                    if (pressTimer) {
-                        clearTimeout(pressTimer);
+                    const touch = e.changedTouches[0];
+                    const deltaX = Math.abs(touch.clientX - startX);
+                    const deltaY = Math.abs(touch.clientY - startY);
+                    if (deltaX > MOVE_TOLERANCE || deltaY > MOVE_TOLERANCE) return;
+                    const fullSrc = thumbnail.getAttribute('data-full-src');
+                    if (fullSrc) {
+                        const grid = thumbnail.closest('.image-grid');
+                        currentOverlayThumbnails = grid
+                            ? Array.from(grid.querySelectorAll('.image-thumbnail[data-full-src]'))
+                            : [thumbnail];
+                        currentOverlayIndex = currentOverlayThumbnails.indexOf(thumbnail);
+                        globalImageOverlay.classList.toggle('has-multiple', currentOverlayThumbnails.length > 1);
+                        showGlobalOverlay(fullSrc, true);
                     }
                 });
                 thumbnail.addEventListener('touchcancel', () => {
-                    clearTimeout(pressTimer);
                     hideGlobalOverlay();
                 });
                 thumbnail.addEventListener('contextmenu', (e) => {
